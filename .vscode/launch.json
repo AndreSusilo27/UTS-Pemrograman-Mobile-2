@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "pemmob2",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/screens/main.dart"
+    },
+    {
+      "name": "pemmob2 (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "program": "lib/screens/main.dart"
+    },
+    {
+      "name": "pemmob2 (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "program": "lib/screens/main.dart"
+    }
+  ]
+}
