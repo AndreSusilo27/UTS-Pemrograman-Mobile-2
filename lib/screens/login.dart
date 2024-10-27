@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:pemmob2/screens/main.dart';
 import 'package:pemmob2/screens/register.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
 
     // Simulasi proses login
     Future.delayed(const Duration(seconds: 2), () {
-      // Di sini, tambahkan logika untuk memverifikasi login
       setState(() {
         _isLoading = false;
       });
@@ -33,107 +33,143 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
-      appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            padding: const EdgeInsets.all(20.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10.0,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                AnimatedTextKit(
-                  animatedTexts: [
-                    FadeAnimatedText(
-                      'Selamat Datang',
-                      textStyle: const TextStyle(
-                        fontSize: 32.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
+      body: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.deepPurple.shade700,
+              Colors.black,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(15.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10.0,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  // Animasi teks dengan efek kursor
+                  AnimatedTextKit(
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        'Selamat Datang',
+                        textStyle: TextStyle(
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple.shade700,
+                        ),
+                        speed: const Duration(milliseconds: 100),
+                        cursor: '|',
+                      ),
+                    ],
+                    totalRepeatCount: 1,
+                  ),
+                  const SizedBox(height: 20),
+                  // Input field Username
+                  TextField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                  ],
-                  isRepeatingAnimation: false,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  const SizedBox(height: 10),
+                  // Input field Password
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _isLoading
-                    ? const SpinKitCircle(
-                        color: Colors.blue,
-                        size: 50.0,
-                      )
-                    : ElevatedButton(
-                        onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 15),
-                          backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                  const SizedBox(height: 20),
+                  // Tombol login dengan animasi loading
+                  _isLoading
+                      ? const SpinKitCircle(
+                          color: Colors.deepPurple,
+                          size: 50.0,
+                        )
+                      : ElevatedButton(
+                          onPressed: _login,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 15),
+                            backgroundColor: Colors.deepPurple.shade600,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 20),
-                        ),
+                  const SizedBox(height: 20),
+                  // Tombol untuk menuju halaman registrasi
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterPage()),
+                      );
+                    },
+                    child: const Text(
+                      'Belum Punya Akun? Daftar di sini',
+                      style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontSize: 16,
                       ),
-                const SizedBox(height: 20),
-                // Tombol untuk menuju halaman registrasi
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
-                    ); // Pastikan RegisterPage ada
-                  },
-                  child: const Text(
-                    'Belum Punya Akun? Daftar di sini',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                      fontSize: 16,
                     ),
                   ),
-                ),
-              ],
+                  // Tombol untuk menuju halaman home
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
+                    },
+                    child: const Text(
+                      'Beranda',
+                      style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
