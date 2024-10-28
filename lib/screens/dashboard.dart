@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:pemmob2/screens/tentang.dart';
 
 class Dashboard extends StatefulWidget {
   final String username;
@@ -244,7 +245,11 @@ class _DashboardState extends State<Dashboard> {
                     const Text("About", style: TextStyle(color: Colors.white)),
                 tileColor: Colors.deepPurple.shade400.withOpacity(0.3),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Menutup drawer terlebih dahulu
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Tentang()),
+                  );
                 },
               ),
               ListTile(
@@ -277,14 +282,34 @@ class _DashboardState extends State<Dashboard> {
           child: ListView(
             children: [
               Card(
-                elevation: 5,
+                elevation: 15,
                 margin: const EdgeInsets.only(bottom: 20),
-                color: Colors.grey[850],
+                color: const Color.fromARGB(73, 52, 52, 52),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      AnimatedTextKit(
+                        animatedTexts: [
+                          TypewriterAnimatedText(
+                            'Dashboard', // Teks yang ditampilkan
+                            textStyle: TextStyle(
+                              fontSize: 32.0,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(
+                                  255, 4, 119, 243), // Set warna ke deepPurple
+                            ),
+                            speed: const Duration(
+                                milliseconds: 100), // Kecepatan ketik
+                            cursor: '|', // Menampilkan kursor '|'
+                          ),
+                        ],
+                        totalRepeatCount: 5, // Set agar animasi berjalan sekali
+                        pause: const Duration(
+                            milliseconds: 500), // Jeda setelah selesai
+                      ),
+                      const SizedBox(height: 10),
                       const AnimatedDefaultTextStyle(
                         duration: Duration(milliseconds: 500),
                         style: TextStyle(
