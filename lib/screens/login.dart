@@ -18,8 +18,20 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+  int _loginAttempts = 0;
+  final int _maxAttempts = 3;
+  bool _isLocked = false;
 
   void _login() async {
+    if (_isLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Akun Anda terkunci sementara. Coba lagi nanti."),
+        ),
+      );
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -29,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     try {
-      // Panggil metode autentikasi dan ambil data pengguna jika login berhasil
       Map<String, dynamic>? userProfile = await DatabaseHelper.instance
           .authenticateAndFetchUser(username, password);
 
@@ -38,24 +49,46 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       if (userProfile != null) {
-        // Navigasi ke Dashboard dengan data profil pengguna
+        _loginAttempts = 0;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => Dashboard(
-              username: userProfile['username'], // Username
-              name: userProfile['name'], // Nama dari profil
-              email: userProfile['email'], // Email dari profil
+              username: userProfile['username'],
+              name: userProfile['name'],
+              email: userProfile['email'],
             ),
           ),
         );
       } else {
-        setState(() {
-          _errorMessage = "Username atau password salah.";
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_errorMessage!)),
-        );
+        _loginAttempts++;
+        if (_loginAttempts >= _maxAttempts) {
+          setState(() {
+            _isLocked = true;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  "Akun terkunci sementara karena terlalu banyak percobaan gagal."),
+              duration: Duration(seconds: 5),
+            ),
+          );
+
+          Future.delayed(const Duration(seconds: 10), () {
+            setState(() {
+              _isLocked = false;
+              _loginAttempts = 0;
+            });
+          });
+        } else {
+          setState(() {
+            _errorMessage =
+                "Username atau password salah. Percobaan $_loginAttempts dari $_maxAttempts.";
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(_errorMessage!)),
+          );
+        }
       }
     } catch (e) {
       setState(() {

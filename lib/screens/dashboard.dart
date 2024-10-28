@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:pemmob2/screens/login.dart';
 import 'package:pemmob2/screens/profile.dart';
 import 'package:pemmob2/screens/ubahprofile.dart';
 import 'package:pemmob2/screens/tentang.dart';
@@ -35,7 +36,6 @@ class _DashboardState extends State<Dashboard> {
         _nama = user['nama'] ?? '';
         _email = user['email'] ?? '';
         _userId = user['id'];
-        // Tambahkan variabel lain sesuai dengan kolom yang ada di join
       });
     } else {
       print('Pengguna tidak ditemukan');
@@ -64,7 +64,33 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _logout() {
-    Navigator.pop(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Konfirmasi Logout"),
+          content: Text("Apakah Anda yakin ingin keluar dari aplikasi?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Tidak"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Ya"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _openSettingsPage() {
@@ -157,7 +183,6 @@ class _DashboardState extends State<Dashboard> {
         ],
         elevation: 5,
       ),
-      // Tambahkan Future<void> _refresh(); di drawer agar data bisa ikut di refresh
       drawer: Drawer(
         width: MediaQuery.of(context).size.width * 0.66,
         child: Container(
@@ -172,7 +197,7 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           child: ListView(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            padding: const EdgeInsets.symmetric(vertical: 37.0),
             children: [
               Container(
                 padding: const EdgeInsets.all(20.0),
@@ -202,7 +227,7 @@ class _DashboardState extends State<Dashboard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      radius: 40,
+                      radius: 65,
                       backgroundImage: AssetImage('assets/default_avatar.jpeg'),
                       backgroundColor: Colors.grey[300],
                     ),
@@ -297,7 +322,6 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Container(

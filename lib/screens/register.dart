@@ -17,12 +17,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _nameController = TextEditingController(); // Controller untuk nama
-  final _emailController = TextEditingController(); // Controller untuk email
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
 
   bool _isLoading = false;
-
-  get userId => null;
 
   // Fungsi untuk mendapatkan user berdasarkan username
   Future<Map<String, dynamic>?> getUserByUsername(String username) async {
@@ -50,10 +48,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Fungsi untuk hashing password
   String _hashPassword(String password, String salt) {
-    final bytes = utf8.encode(password + salt); // Kombinasi password dan salt
-    return sha256.convert(bytes).toString(); // Menghasilkan hash SHA-256
+    final bytes = utf8.encode(password + salt);
+    return sha256.convert(bytes).toString();
   }
 
+  // Fungsi registrasi user
   Future<Map<String, dynamic>> registerUser(
       String username, String password, String name, String email) async {
     final db = await DatabaseHelper.instance.database;
@@ -88,14 +87,14 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
 
-    // Masukkan data ke tabel `user_profiles` yang terhubung dengan `userId`
+    // Masukkan data ke tabel `user_profiles`
     await db.insert(
       'user_profiles',
       {
         'iduser': userId,
         'nama': name,
         'email': email,
-        'alamat': '', // Optional: tambahkan sesuai kebutuhan
+        'alamat': '',
         'notlp': '',
         'foto': '',
       },
@@ -117,32 +116,86 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = true;
     });
 
+    // Validasi input
+    if (_usernameController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty ||
+        _nameController.text.isEmpty ||
+        _emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Semua field harus diisi')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    final emailPattern = r'^[^@]+@[^@]+\.[^@]+';
+    if (!RegExp(emailPattern).hasMatch(_emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Format email tidak valid')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (_usernameController.text.length < 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Username harus lebih dari 3 karakter')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (_passwordController.text.length < 7) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password harus lebih dari 6 karakter')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password dan konfirmasi tidak cocok')),
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
     try {
-      print("Mulai proses registrasi..."); // Debug
-      var userData = await registerUser(
+      await registerUser(
         _usernameController.text,
         _passwordController.text,
         _nameController.text,
         _emailController.text,
       );
 
-      print('Registrasi berhasil: $userData');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Registrasi berhasil')),
+      );
 
-      // Pindah ke halaman login setelah berhasil registrasi
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } catch (e) {
-      print('Registrasi gagal: $e'); // Tampilkan error jika ada
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registrasi gagal: $e')),
+        SnackBar(content: Text('Registrasi gagal: ${e.toString()}')),
       );
     } finally {
       setState(() {
         _isLoading = false;
       });
-      print("Proses registrasi selesai."); // Debug
     }
   }
 
@@ -181,7 +234,6 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // Animasi teks dengan efek kursor
                   AnimatedTextKit(
                     animatedTexts: [
                       TypewriterAnimatedText(
@@ -198,7 +250,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     totalRepeatCount: 1,
                   ),
                   const SizedBox(height: 20),
-                  // Input field Nama
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(
@@ -211,7 +262,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Input field Email
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -224,7 +274,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Input field Username
                   TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
@@ -237,7 +286,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Input field Password
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
@@ -251,7 +299,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Input field Confirm Password
                   TextField(
                     controller: _confirmPasswordController,
                     obscureText: true,
@@ -265,31 +312,26 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Tombol Register dengan animasi loading
-                  _isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.deepPurple,
-                        )
-                      : ElevatedButton(
-                          onPressed: _register,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 15),
-                            backgroundColor: Colors.deepPurple.shade600,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                          child: const Text(
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _register,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 50.0),
+                      backgroundColor: Colors.deepPurple.shade600,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text(
                             'Daftar',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               color: Colors.white,
                             ),
                           ),
-                        ),
-                  const SizedBox(height: 20),
-                  // Tombol untuk kembali ke halaman login
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
