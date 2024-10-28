@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/screens/dashboard.dart';
+import 'package:pemmob2/screens/main.dart';
 import 'package:pemmob2/screens/register.dart';
 import 'package:pemmob2/db/db.dart';
 
@@ -182,6 +183,22 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: const Text(
                       'Belum punya akun? Daftar di sini',
+                      style: TextStyle(
+                        color: Colors.blueAccent,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
+                    },
+                    child: const Text(
+                      'Beranda',
                       style: TextStyle(
                         color: Colors.blueAccent,
                         fontSize: 16,

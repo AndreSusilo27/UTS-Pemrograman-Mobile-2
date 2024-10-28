@@ -151,6 +151,38 @@ class DatabaseHelper {
     return result;
   }
 
+  Future<Map<String, dynamic>?> getUserJoinedData(String username) async {
+    final db = await instance.database;
+
+    final result = await db.rawQuery('''
+    SELECT users.*, user_profiles.*
+    FROM users
+    JOIN user_profiles ON users.id = user_profiles.iduser
+    WHERE users.username = ?
+  ''', [username]);
+
+    if (result.isNotEmpty) {
+      return result.first;
+    } else {
+      return null;
+    }
+  }
+
+  Future<int?> getIdUserByEmail(String email) async {
+    final db = await database;
+    final result = await db.query(
+      'user_profiles',
+      columns: ['iduser'],
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (result.isNotEmpty) {
+      return result.first['iduser'] as int?;
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> getUserByUsername(String username) async {
     final db = await database;
     final results = await db.query(

@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 20),
               // Sambutan
               const Text(
-                'Selamat Datang di Aplikasi Kami!',
+                'Selamat Datang di Aplikasi Andre APP',
                 style: TextStyle(
                   fontSize: 22.0,
                   color: Colors.white,
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
               AnimatedTextKit(
                 animatedTexts: [
                   TypewriterAnimatedText(
-                    'Aplikasi Profesional untuk Manajemen',
+                    'Aplikasi Pemrograman Mobile 2',
                     textStyle: const TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                     speed: const Duration(milliseconds: 120),
                   ),
                   TypewriterAnimatedText(
-                    'Memberikan Kemudahan dalam Absensi',
+                    'Aplikasi Android Dengan Flutter',
                     textStyle: const TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,
@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                     speed: const Duration(milliseconds: 120),
                   ),
                   TypewriterAnimatedText(
-                    'Efisiensi dan Produktivitas dalam Satu Aplikasi',
+                    'Menggunakan Bahasa Dart',
                     textStyle: const TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,

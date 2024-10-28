@@ -1,132 +1,144 @@
-// import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:pemmob2/db/db.dart';
-// import 'dart:io';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pemmob2/db/db.dart';
 
-// class UbahProfile extends StatefulWidget {
-//   final String name;
-//   final String email;
-//   final String username;
-//   final String address;
-//   final String phoneNumber;
+class UbahProfile extends StatefulWidget {
+  final int userId;
+  const UbahProfile({Key? key, required this.userId}) : super(key: key);
 
-//   const UbahProfile({
-//     Key? key,
-//     required this.name,
-//     required this.email,
-//     required this.username,
-//     required this.address,
-//     required this.phoneNumber,
-//   }) : super(key: key);
+  @override
+  _UbahProfileState createState() => _UbahProfileState();
+}
 
-//   @override
-//   _UbahProfileState createState() => _UbahProfileState();
-// }
+class _UbahProfileState extends State<UbahProfile> {
+  final _formKey = GlobalKey<FormState>();
+  String? name;
+  String? email;
+  String? address;
+  String? phone;
+  String? photoUrl;
 
-// class _UbahProfileState extends State<UbahProfile> {
-//   late TextEditingController _nameController;
-//   late TextEditingController _emailController;
-//   late TextEditingController _addressController;
-//   late TextEditingController _phoneController;
-//   File? _imageFile;
+  Future<void> _pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        photoUrl = pickedImage.path; // Simpan path foto yang dipilih
+      });
+    }
+  }
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _nameController = TextEditingController(text: widget.name);
-//     _emailController = TextEditingController(text: widget.email);
-//     _addressController = TextEditingController(text: widget.address);
-//     _phoneController = TextEditingController(text: widget.phoneNumber);
-//   }
+  Future<void> _updateProfile() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final db = DatabaseHelper.instance;
 
-//   Future<void> _pickImage() async {
-//     final pickedFile =
-//         await ImagePicker().pickImage(source: ImageSource.gallery);
-//     if (pickedFile != null) {
-//       setState(() {
-//         _imageFile = File(pickedFile.path);
-//       });
-//     }
-//   }
+      try {
+        await db.database.then((db) => db.update(
+              'user_profiles',
+              {
+                'nama': name,
+                'email': email,
+                'alamat': address,
+                'notlp': phone,
+                'foto': photoUrl,
+              },
+              where: 'iduser = ?',
+              whereArgs: [widget.userId],
+            ));
 
-//   void _saveChanges() async {
-//     await DatabaseHelper.instance.updateUserProfile(
-//       widget.username,
-//       _nameController.text,
-//       _emailController.text,
-//       _addressController.text,
-//       _phoneController.text,
-//       _imageFile?.path, // Simpan path foto jika ada
-//     );
+        // Mengirimkan kembali userId ke halaman sebelumnya
+        Navigator.pop(context, widget.userId);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memperbarui profil: $e')),
+        );
+      }
+    }
+  }
 
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       const SnackBar(content: Text("Perubahan disimpan!")),
-//     );
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email wajib diisi';
+    }
+    final RegExp emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Format email tidak valid';
+    }
+    return null;
+  }
 
-//     Navigator.pop(context, 'updated');
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Pengaturan Profil'),
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             GestureDetector(
-//               onTap: _pickImage,
-//               child: CircleAvatar(
-//                 radius: 50,
-//                 backgroundImage: _imageFile != null
-//                     ? FileImage(_imageFile!)
-//                     : const AssetImage('assets/default_avatar.jpeg')
-//                         as ImageProvider,
-//                 backgroundColor: Colors.grey[300],
-//               ),
-//             ),
-//             const SizedBox(height: 16),
-//             TextField(
-//               controller: _nameController,
-//               decoration: const InputDecoration(
-//                 labelText: 'Nama',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             const SizedBox(height: 10),
-//             TextField(
-//               controller: _emailController,
-//               decoration: const InputDecoration(
-//                 labelText: 'Email',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             const SizedBox(height: 10),
-//             TextField(
-//               controller: _addressController,
-//               decoration: const InputDecoration(
-//                 labelText: 'Alamat',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             const SizedBox(height: 10),
-//             TextField(
-//               controller: _phoneController,
-//               decoration: const InputDecoration(
-//                 labelText: 'No. Telepon',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             const SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: _saveChanges,
-//               child: const Text('Simpan Perubahan'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Ubah Profil')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _pickImage,
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage:
+                          photoUrl != null ? FileImage(File(photoUrl!)) : null,
+                      backgroundColor: Colors.grey.shade300,
+                      child: photoUrl == null
+                          ? const Icon(Icons.manage_accounts_sharp,
+                              size: 50, color: Colors.white)
+                          : null,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 4,
+                      child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: Colors.blueAccent,
+                        child: const Icon(
+                          Icons.add,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Nama'),
+                validator: (value) =>
+                    value!.isEmpty ? 'Nama wajib diisi' : null,
+                onSaved: (value) => name = value,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: _validateEmail,
+                onSaved: (value) => email = value,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Alamat'),
+                onSaved: (value) => address = value,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'No. Telp'),
+                onSaved: (value) => phone = value,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _updateProfile,
+                child: const Text('Simpan Perubahan'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:pemmob2/screens/profile.dart';
+import 'package:pemmob2/screens/ubahprofile.dart';
 import 'package:pemmob2/screens/tentang.dart';
 
 class Dashboard extends StatefulWidget {
@@ -18,6 +20,7 @@ class _DashboardState extends State<Dashboard> {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   String _nama = '';
   String _email = '';
+  int? _userId;
 
   @override
   void initState() {
@@ -26,14 +29,16 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _getUserProfile() async {
-    var user = await _databaseHelper.getUserByUsername(widget.username);
+    var user = await _databaseHelper.getUserJoinedData(widget.username);
     if (user != null) {
       setState(() {
         _nama = user['nama'] ?? '';
         _email = user['email'] ?? '';
+        _userId = user['id'];
+        // Tambahkan variabel lain sesuai dengan kolom yang ada di join
       });
     } else {
-      print('Pengguna tidak ditemukan'); // Debug print
+      print('Pengguna tidak ditemukan');
     }
   }
 
@@ -41,17 +46,43 @@ class _DashboardState extends State<Dashboard> {
     await _getUserProfile();
   }
 
+  void _navigateToProfile(BuildContext context) async {
+    final userId = await _databaseHelper.getIdUserByEmail(widget.email);
+
+    if (userId != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(userId: userId),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('User ID tidak ditemukan')),
+      );
+    }
+  }
+
   void _logout() {
     Navigator.pop(context);
   }
 
   void _openSettingsPage() {
-    // Tambahkan logika untuk membuka halaman pengaturan
-    print('Halaman pengaturan dibuka');
+    if (_userId != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UbahProfile(userId: _userId!),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('User ID tidak ditemukan')),
+      );
+    }
   }
 
   Future<void> _showUserTableDialog() async {
-    // Ambil data user dari tabel user_profile
     List<Map<String, dynamic>> users =
         await DatabaseHelper.instance.getAllUsers();
 
@@ -61,7 +92,7 @@ class _DashboardState extends State<Dashboard> {
         return AlertDialog(
           title: const Text("Daftar Pengguna"),
           content: SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Atur scroll ke horizontal
+            scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
                 DataColumn(label: Text("ID")),
@@ -71,13 +102,10 @@ class _DashboardState extends State<Dashboard> {
               ],
               rows: users.map((user) {
                 return DataRow(cells: [
-                  DataCell(Text(user['id'].toString())), // ID pengguna
-                  DataCell(Text(
-                      user['username'] ?? 'Tidak ada username')), // Username
-                  DataCell(
-                      Text(user['name'] ?? 'Tidak ada nama')), // Nama pengguna
-                  DataCell(Text(
-                      user['email'] ?? 'Tidak ada email')), // Email pengguna
+                  DataCell(Text(user['id'].toString())),
+                  DataCell(Text(user['username'] ?? 'Tidak ada username')),
+                  DataCell(Text(user['name'] ?? 'Tidak ada nama')),
+                  DataCell(Text(user['email'] ?? 'Tidak ada email')),
                 ]);
               }).toList(),
             ),
@@ -101,39 +129,35 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         leading: Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu,
-                color: Colors.white), // Ikon menu warna putih
+            icon: const Icon(Icons.menu, color: Colors.white),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
         title: ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
-            colors: [
-              Colors.blueAccent,
-              Colors.cyan
-            ], // Gradasi dari blueAccent ke cyan
+            colors: [Colors.blueAccent, Colors.cyan],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ).createShader(bounds),
           child: const Text(
             "Andre APP",
             style: TextStyle(
-              fontSize: 24.0, // Ukuran font untuk AppBar
+              fontSize: 24.0,
               fontWeight: FontWeight.bold,
-              color: Colors.white, // Warna teks putih agar gradasi terlihat
+              color: Colors.white,
             ),
           ),
         ),
         backgroundColor: Colors.deepPurple.shade600,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings,
-                color: Colors.white), // Ikon settings warna putih
+            icon: const Icon(Icons.settings, color: Colors.white),
             onPressed: _openSettingsPage,
           ),
         ],
-        elevation: 5, // Efek bayangan untuk kesan profesional
+        elevation: 5,
       ),
+      // Tambahkan Future<void> _refresh(); di drawer agar data bisa ikut di refresh
       drawer: Drawer(
         width: MediaQuery.of(context).size.width * 0.66,
         child: Container(
@@ -168,7 +192,7 @@ class _DashboardState extends State<Dashboard> {
                   gradient: LinearGradient(
                     colors: [
                       Colors.deepPurple.shade700,
-                      Colors.deepPurple.shade900
+                      Colors.deepPurple.shade900,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -199,9 +223,7 @@ class _DashboardState extends State<Dashboard> {
                     AnimatedTextKit(
                       animatedTexts: [
                         TypewriterAnimatedText(
-                          widget.name.isNotEmpty
-                              ? widget.name
-                              : 'Nama Pengguna',
+                          _nama.isNotEmpty ? _nama : 'Nama Pengguna',
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -216,9 +238,7 @@ class _DashboardState extends State<Dashboard> {
                     AnimatedTextKit(
                       animatedTexts: [
                         TypewriterAnimatedText(
-                          widget.email.isNotEmpty
-                              ? widget.email
-                              : 'Email Pengguna',
+                          _email.isNotEmpty ? _email : 'Email Pengguna',
                           textStyle: const TextStyle(
                             fontSize: 14,
                             color: Colors.white60,
@@ -240,12 +260,23 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               ListTile(
+                leading: const Icon(Icons.account_circle_outlined,
+                    color: Colors.white),
+                title: const Text("Profile",
+                    style: TextStyle(color: Colors.white)),
+                tileColor: Colors.deepPurple.shade400.withOpacity(0.3),
+                onTap: () {
+                  Navigator.pop(context);
+                  _navigateToProfile(context);
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.info, color: Colors.white),
                 title:
                     const Text("About", style: TextStyle(color: Colors.white)),
                 tileColor: Colors.deepPurple.shade400.withOpacity(0.3),
                 onTap: () {
-                  Navigator.pop(context); // Menutup drawer terlebih dahulu
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Tentang()),
@@ -266,86 +297,97 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.deepPurple.shade400,
-              Colors.black87,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.deepPurple.shade400,
+                Colors.black87,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
           child: ListView(
+            padding: const EdgeInsets.all(20.0),
             children: [
-              Card(
-                elevation: 15,
-                margin: const EdgeInsets.only(bottom: 20),
-                color: const Color.fromARGB(73, 52, 52, 52),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AnimatedTextKit(
-                        animatedTexts: [
-                          TypewriterAnimatedText(
-                            'Dashboard', // Teks yang ditampilkan
-                            textStyle: TextStyle(
-                              fontSize: 32.0,
-                              fontWeight: FontWeight.bold,
-                              color: const Color.fromARGB(
-                                  255, 4, 119, 243), // Set warna ke deepPurple
-                            ),
-                            speed: const Duration(
-                                milliseconds: 100), // Kecepatan ketik
-                            cursor: '|', // Menampilkan kursor '|'
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Selamat Datang di Dashboard!",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple.shade700,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 3,
+                            blurRadius: 6,
+                            offset: const Offset(2, 4),
                           ),
                         ],
-                        totalRepeatCount: 5, // Set agar animasi berjalan sekali
-                        pause: const Duration(
-                            milliseconds: 500), // Jeda setelah selesai
                       ),
-                      const SizedBox(height: 10),
-                      const AnimatedDefaultTextStyle(
-                        duration: Duration(milliseconds: 500),
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        child: Text('Selamat Datang di Andre APP 2'),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Hai, ${widget.name.isNotEmpty ? widget.name : 'Pengguna'} ;)',
-                        style:
-                            const TextStyle(fontSize: 24, color: Colors.white),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _showUserTableDialog,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
-                          backgroundColor: Colors.blue.shade700,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            _nama.isNotEmpty
+                                ? "Nama: $_nama"
+                                : "Nama: Tidak Ditemukan",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          'Lihat User',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
+                          const SizedBox(height: 10),
+                          Text(
+                            _email.isNotEmpty
+                                ? "Email: $_email"
+                                : "Email: Tidak Ditemukan",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 20),
+                          TextButton.icon(
+                            onPressed: _showUserTableDialog,
+                            icon: const Icon(Icons.table_chart,
+                                color: Colors.white),
+                            label: const Text(
+                              "Tampilkan Tabel Pengguna",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.deepPurple.shade500,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
