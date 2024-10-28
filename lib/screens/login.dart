@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:pemmob2/screens/main.dart';
+import 'package:pemmob2/screens/dashboard.dart';
 import 'package:pemmob2/screens/register.dart';
+import 'package:pemmob2/db/db.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,19 +16,55 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  String? _errorMessage;
 
-  void _login() {
+  void _login() async {
     setState(() {
       _isLoading = true;
+      _errorMessage = null;
     });
 
-    // Simulasi proses login
-    Future.delayed(const Duration(seconds: 2), () {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    try {
+      // Panggil metode autentikasi dan ambil data pengguna jika login berhasil
+      Map<String, dynamic>? userProfile = await DatabaseHelper.instance
+          .authenticateAndFetchUser(username, password);
+
       setState(() {
         _isLoading = false;
       });
-      // Ganti dengan logika navigasi ke halaman berikutnya jika login berhasil
-    });
+
+      if (userProfile != null) {
+        // Navigasi ke Dashboard dengan data profil pengguna
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Dashboard(
+              username: userProfile['username'], // Username
+              name: userProfile['name'], // Nama dari profil
+              email: userProfile['email'], // Email dari profil
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          _errorMessage = "Username atau password salah.";
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_errorMessage!)),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Terjadi kesalahan, silakan coba lagi.";
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Terjadi kesalahan, silakan coba lagi.")),
+      );
+    }
   }
 
   @override
@@ -65,7 +102,6 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // Animasi teks dengan efek kursor
                   AnimatedTextKit(
                     animatedTexts: [
                       TypewriterAnimatedText(
@@ -82,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
                     totalRepeatCount: 1,
                   ),
                   const SizedBox(height: 20),
-                  // Input field Username
                   TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
@@ -95,7 +130,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Input field Password
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
@@ -109,7 +143,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Tombol login dengan animasi loading
+                  if (_errorMessage != null)
+                    Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  const SizedBox(height: 10),
                   _isLoading
                       ? const SpinKitCircle(
                           color: Colors.deepPurple,
@@ -133,8 +172,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-                  const SizedBox(height: 20),
-                  // Tombol untuk menuju halaman registrasi
                   TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -144,24 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     },
                     child: const Text(
-                      'Belum Punya Akun? Daftar di sini',
-                      style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  // Tombol untuk menuju halaman home
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage()),
-                      );
-                    },
-                    child: const Text(
-                      'Beranda',
+                      'Belum punya akun? Daftar di sini',
                       style: TextStyle(
                         color: Colors.blueAccent,
                         fontSize: 16,
