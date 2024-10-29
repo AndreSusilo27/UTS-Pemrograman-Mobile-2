@@ -5,7 +5,8 @@ import 'package:pemmob2/db/db.dart';
 
 class UbahProfile extends StatefulWidget {
   final int userId;
-  const UbahProfile({super.key, required this.userId});
+
+  const UbahProfile({Key? key, required this.userId}) : super(key: key);
 
   @override
   _UbahProfileState createState() => _UbahProfileState();
@@ -22,7 +23,7 @@ class _UbahProfileState extends State<UbahProfile> {
   @override
   void initState() {
     super.initState();
-    _loadUserProfile(); // Load data profil pengguna saat halaman dibuka
+    _loadUserProfile();
   }
 
   Future<void> _loadUserProfile() async {
@@ -50,19 +51,17 @@ class _UbahProfileState extends State<UbahProfile> {
         await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
-        photoUrl = pickedImage.path; // Simpan path foto yang dipilih
+        photoUrl = pickedImage.path;
       });
     }
   }
 
   Future<void> _updateProfile() async {
-    // Validasi form terlebih dahulu
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final db = DatabaseHelper.instance;
 
       try {
-        // Simpan data ke database
         await db.database.then((db) => db.update(
               'user_profiles',
               {
@@ -70,34 +69,52 @@ class _UbahProfileState extends State<UbahProfile> {
                 'email': email,
                 'alamat': address,
                 'notlp': phone,
-                'foto': photoUrl, // Path foto baru jika ada
+                'foto': photoUrl ??
+                    'assets/default_avatar.jpeg', // Set default photo if null
               },
               where: 'iduser = ?',
               whereArgs: [widget.userId],
             ));
 
-        // Ambil data terbaru dari tabel setelah pembaruan
-        final updatedProfile = await db.database.then((db) => db.query(
-              'user_profiles',
-              where: 'iduser = ?',
-              whereArgs: [widget.userId],
-            ));
-
-        if (updatedProfile.isNotEmpty) {
-          // Mengambil data dari hasil query
-          final userId = updatedProfile[0]['iduser'];
-
-          // Navigasi kembali ke Dashboard dan memicu refresh
-          Navigator.pop(context, {'userId': userId, 'success': true});
-        } else {
-          throw Exception('Profil tidak ditemukan');
-        }
+        Navigator.pop(context, {
+          'nama': name,
+          'email': email,
+          'alamat': address,
+          'notlp': phone,
+          'foto': photoUrl ?? 'assets/default_avatar.jpeg',
+        });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Gagal memperbarui profil: $e')),
         );
       }
     }
+  }
+
+  void _confirmUpdate() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Konfirmasi'),
+          content:
+              const Text('Apakah Anda yakin ingin mengubah data tersebut?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Tidak'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _updateProfile();
+              },
+              child: const Text('Ya'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   String? _validateEmail(String? value) {
@@ -114,74 +131,145 @@ class _UbahProfileState extends State<UbahProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ubah Profil')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: photoUrl != null && photoUrl!.isNotEmpty
-                          ? FileImage(File(photoUrl!))
-                          : null,
-                      backgroundColor: Colors.grey.shade300,
-                      child: photoUrl == null
-                          ? const Icon(Icons.manage_accounts_sharp,
-                              size: 50, color: Colors.white)
-                          : null,
-                    ),
-                    const Positioned(
-                      bottom: 0,
-                      right: 4,
-                      child: CircleAvatar(
-                        radius: 14,
-                        backgroundColor: Colors.blueAccent,
-                        child: Icon(
-                          Icons.add,
-                          size: 18,
-                          color: Colors.white,
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'Ubah Profile',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.deepPurple[900],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _confirmUpdate,
+          ),
+        ],
+      ),
+      body: Container(
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple.shade600, Colors.black87],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+          child: Form(
+            key: _formKey,
+            child: Container(
+              padding:
+                  const EdgeInsets.all(16.0), // Padding around the container
+              decoration: BoxDecoration(
+                color: Colors.white
+                    .withOpacity(0.9), // Light background for the container
+                borderRadius: BorderRadius.circular(12.0), // Rounded corners
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage:
+                              (photoUrl != null && photoUrl!.isNotEmpty)
+                                  ? FileImage(File(photoUrl!))
+                                  : AssetImage('assets/default_avatar.jpeg')
+                                      as ImageProvider, // Default photo
+                          backgroundColor: Colors.grey.shade300,
+                          child: photoUrl == null
+                              ? const Icon(
+                                  Icons.account_circle,
+                                  size: 50,
+                                  color: Colors.white,
+                                )
+                              : null,
                         ),
-                      ),
+                        const Positioned(
+                          bottom: 0,
+                          right: 4,
+                          child: CircleAvatar(
+                            radius: 14,
+                            backgroundColor: Colors.blueAccent,
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    initialValue:
+                        name ?? '', // Use empty string if name is null
+                    decoration: InputDecoration(
+                      labelText: 'Nama',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Nama wajib diisi' : null,
+                    onSaved: (value) => name = value,
+                  ),
+                  const SizedBox(height: 15),
+                  TextFormField(
+                    initialValue:
+                        email ?? '', // Use empty string if email is null
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                    ),
+                    validator: _validateEmail,
+                    onSaved: (value) => email = value,
+                  ),
+                  const SizedBox(height: 15),
+                  TextFormField(
+                    initialValue:
+                        address ?? '', // Use empty string if address is null
+                    decoration: InputDecoration(
+                      labelText: 'Alamat',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                    ),
+                    onSaved: (value) => address = value,
+                  ),
+                  const SizedBox(height: 15),
+                  TextFormField(
+                    initialValue:
+                        phone ?? '', // Use empty string if phone is null
+                    decoration: InputDecoration(
+                      labelText: 'No. Telp',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                    ),
+                    onSaved: (value) => phone = value,
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-              TextFormField(
-                initialValue: name,
-                decoration: const InputDecoration(labelText: 'Nama'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Nama wajib diisi' : null,
-                onSaved: (value) => name = value,
-              ),
-              TextFormField(
-                initialValue: email,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: _validateEmail,
-                onSaved: (value) => email = value,
-              ),
-              TextFormField(
-                initialValue: address,
-                decoration: const InputDecoration(labelText: 'Alamat'),
-                onSaved: (value) => address = value,
-              ),
-              TextFormField(
-                initialValue: phone,
-                decoration: const InputDecoration(labelText: 'No. Telp'),
-                onSaved: (value) => phone = value,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _updateProfile,
-                child: const Text('Simpan Perubahan'),
-              ),
-            ],
+            ),
           ),
         ),
       ),

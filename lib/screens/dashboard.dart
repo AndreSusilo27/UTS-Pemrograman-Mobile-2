@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/screens/login.dart';
+import 'package:pemmob2/screens/profile.dart';
 import 'package:pemmob2/screens/ubahprofile.dart';
 import 'package:pemmob2/screens/tentang.dart';
 
@@ -59,14 +60,14 @@ class _DashboardState extends State<Dashboard> {
     await _getUserProfile();
   }
 
-  Future<void> _navigateToProfile(BuildContext context) async {
-    _userId = await _databaseHelper.getIdUserByEmail(widget.email);
+  Future<void> _openProfilePage(BuildContext context) async {
+    _userId = await _databaseHelper.getIdUserByUsername(widget.username);
 
     if (_userId != null) {
       final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => UbahProfile(userId: _userId!),
+          builder: (context) => ProfilePage(userId: _userId!),
         ),
       );
 
@@ -114,7 +115,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _openSettingsPage() async {
-    _userId = await _databaseHelper.getIdUserByEmail(widget.email);
+    _userId = await _databaseHelper.getIdUserByUsername(widget.username);
 
     if (_userId != null) {
       final result = await Navigator.push(
@@ -325,7 +326,7 @@ class _DashboardState extends State<Dashboard> {
                     style: TextStyle(color: Colors.white)),
                 tileColor: Colors.deepPurple.shade600,
                 onTap: () {
-                  _navigateToProfile(context);
+                  _openProfilePage(context);
                 },
               ),
               ListTile(

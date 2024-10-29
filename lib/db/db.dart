@@ -45,7 +45,7 @@ class DatabaseHelper {
         idbio INTEGER PRIMARY KEY AUTOINCREMENT,
         iduser INTEGER NOT NULL,
         nama TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
+        email TEXT NOT NULL,
         alamat TEXT,
         notlp TEXT,
         foto TEXT,
@@ -174,14 +174,15 @@ class DatabaseHelper {
     return result.isNotEmpty ? result.first : null;
   }
 
-  Future<int?> getIdUserByEmail(String email) async {
+  Future<int?> getIdUserByUsername(String username) async {
     final db = await database;
-    final result = await db.query(
-      'user_profiles',
-      columns: ['iduser'],
-      where: 'email = ?',
-      whereArgs: [email],
-    );
+
+    final result = await db.rawQuery('''
+    SELECT users.id AS iduser
+    FROM users
+    INNER JOIN user_profiles ON users.id = user_profiles.iduser
+    WHERE users.username = ?
+  ''', [username]);
 
     if (result.isNotEmpty) {
       return result.first['iduser'] as int?;
@@ -197,10 +198,5 @@ class DatabaseHelper {
       whereArgs: [username],
     );
     return results.isNotEmpty ? results.first : null;
-  }
-
-  Future<void> closeDatabase() async {
-    final db = await database;
-    await db.close();
   }
 }

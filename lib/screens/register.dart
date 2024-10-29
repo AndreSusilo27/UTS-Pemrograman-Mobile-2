@@ -123,7 +123,10 @@ class _RegisterPageState extends State<RegisterPage> {
         _nameController.text.isEmpty ||
         _emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Semua field harus diisi')),
+        const SnackBar(
+          content: Text('Semua field harus diisi'),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
       setState(() {
         _isLoading = false;
@@ -134,7 +137,10 @@ class _RegisterPageState extends State<RegisterPage> {
     final emailPattern = r'^[^@]+@[^@]+\.[^@]+';
     if (!RegExp(emailPattern).hasMatch(_emailController.text)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Format email tidak valid')),
+        const SnackBar(
+          content: Text('Format email tidak valid'),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
       setState(() {
         _isLoading = false;
@@ -144,7 +150,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_usernameController.text.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Username harus lebih dari 3 karakter')),
+        const SnackBar(
+          content: Text('Username harus lebih dari 3 karakter'),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
       setState(() {
         _isLoading = false;
@@ -154,7 +163,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_passwordController.text.length < 7) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password harus lebih dari 6 karakter')),
+        const SnackBar(
+          content: Text('Password harus lebih dari 6 karakter'),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
       setState(() {
         _isLoading = false;
@@ -164,7 +176,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password dan konfirmasi tidak cocok')),
+        const SnackBar(
+          content: Text('Password dan konfirmasi tidak cocok'),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
       setState(() {
         _isLoading = false;
@@ -180,8 +195,12 @@ class _RegisterPageState extends State<RegisterPage> {
         _emailController.text,
       );
 
+      // Notifikasi keberhasilan registrasi
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registrasi berhasil')),
+        const SnackBar(
+          content: Text('Registrasi berhasil'),
+          backgroundColor: Colors.green, // Warna hijau untuk notifikasi sukses
+        ),
       );
 
       Navigator.push(
@@ -189,8 +208,12 @@ class _RegisterPageState extends State<RegisterPage> {
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } catch (e) {
+      // Notifikasi kegagalan registrasi
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registrasi gagal: ${e.toString()}')),
+        SnackBar(
+          content: Text('Registrasi gagal: ${e.toString()}'),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
     } finally {
       setState(() {

@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Akun Anda terkunci sementara. Coba lagi nanti."),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
         ),
       );
       return;
@@ -47,7 +48,10 @@ class _LoginPageState extends State<LoginPage> {
         _errorMessage = "Username dan password tidak boleh kosong.";
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_errorMessage!)),
+        SnackBar(
+          content: Text(_errorMessage!),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
       return;
     }
@@ -82,6 +86,15 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         );
+
+        // Menampilkan notifikasi berhasil
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Login berhasil!"),
+            backgroundColor:
+                Colors.green, // Warna hijau untuk notifikasi sukses
+          ),
+        );
       } else {
         // Jika pengguna tidak ada, tingkatkan percobaan login
         _loginAttempts++;
@@ -93,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
             const SnackBar(
               content: Text(
                   "Akun terkunci sementara karena terlalu banyak percobaan gagal."),
+              backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
               duration: Duration(seconds: 5),
             ),
           );
@@ -110,7 +124,10 @@ class _LoginPageState extends State<LoginPage> {
                 "Username atau password salah. Percobaan $_loginAttempts dari $_maxAttempts.";
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(_errorMessage!)),
+            SnackBar(
+              content: Text(_errorMessage!),
+              backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+            ),
           );
         }
       }
@@ -121,7 +138,10 @@ class _LoginPageState extends State<LoginPage> {
         _errorMessage = "Terjadi kesalahan, silakan coba lagi.";
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Terjadi kesalahan, silakan coba lagi.")),
+        const SnackBar(
+          content: Text("Terjadi kesalahan, silakan coba lagi."),
+          backgroundColor: Colors.red, // Warna merah untuk notifikasi gagal
+        ),
       );
     }
   }

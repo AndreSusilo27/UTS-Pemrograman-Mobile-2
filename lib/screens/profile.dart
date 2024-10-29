@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:pemmob2/screens/ubahprofile.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/db/db.dart';
 
 class ProfilePage extends StatefulWidget {
   final int userId;
-  const ProfilePage({Key? key, required this.userId}) : super(key: key);
+
+  const ProfilePage({super.key, required this.userId});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -48,55 +50,146 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 80.0),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Kondisi untuk menampilkan foto profil atau default jika foto kosong
-              userData!['foto'] != null && userData!['foto'].isNotEmpty
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.file(
-                        File(userData!['foto']),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.asset(
-                        'assets/default_avatar.jpeg',
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-              const SizedBox(height: 10),
-              Text(userData!['username'], style: const TextStyle(fontSize: 20)),
-              Text('Nama: ${userData!['nama']}'),
-              Text('Email: ${userData!['email']}'),
-              Text('Alamat: ${userData!['alamat']}'),
-              Text('No. Telp: ${userData!['notlp']}'),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UbahProfile(userId: widget.userId),
-                    ),
-                  );
-                },
-                child: const Text('Ubah Profil'),
-              ),
-            ],
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        title: Text(
+          'Ubah Profile',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        backgroundColor: Colors.deepPurple[900],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple.shade600, Colors.black87],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Kotak foto profil dengan efek
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 130,
+                  height: 130,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.5),
+                        blurRadius: 12,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+                ),
+                // Foto profil
+                Container(
+                  width: 180,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.white54, width: 3),
+                    image: DecorationImage(
+                      image: userData!['foto'] != null &&
+                              userData!['foto'].isNotEmpty
+                          ? FileImage(File(userData!['foto']))
+                          : AssetImage('assets/default_avatar.jpeg')
+                              as ImageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Username dengan efek animasi dan '@' di depan
+            AnimatedTextKit(
+              animatedTexts: [
+                TypewriterAnimatedText(
+                  '@${userData!['username']}',
+                  textStyle: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    foreground: Paint()
+                      ..shader = LinearGradient(
+                        colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                      ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+                  ),
+                  speed: const Duration(milliseconds: 170),
+                ),
+              ],
+              isRepeatingAnimation: false,
+            ),
+            const SizedBox(height: 20),
+
+            // Informasi profil dalam card
+            Card(
+              color: Colors.white.withOpacity(0.17),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 3,
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildProfileInfo('Nama', userData!['nama']),
+                    _buildProfileInfo('Email', userData!['email']),
+                    _buildProfileInfo('Alamat', userData!['alamat']),
+                    _buildProfileInfo('No. Telp', userData!['notlp']),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileInfo(String title, String? value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 90,
+            child: Text(
+              '$title',
+              style: GoogleFonts.roboto(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Flexible(
+            child: Text(
+              value ?? 'Tidak ada data',
+              style: GoogleFonts.roboto(
+                color: const Color.fromARGB(214, 255, 255, 255),
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
