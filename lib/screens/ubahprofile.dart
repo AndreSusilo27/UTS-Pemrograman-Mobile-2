@@ -5,7 +5,7 @@ import 'package:pemmob2/db/db.dart';
 
 class UbahProfile extends StatefulWidget {
   final int userId;
-  const UbahProfile({Key? key, required this.userId}) : super(key: key);
+  const UbahProfile({super.key, required this.userId});
 
   @override
   _UbahProfileState createState() => _UbahProfileState();
@@ -19,6 +19,31 @@ class _UbahProfileState extends State<UbahProfile> {
   String? phone;
   String? photoUrl;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile(); // Load data profil pengguna saat halaman dibuka
+  }
+
+  Future<void> _loadUserProfile() async {
+    final db = DatabaseHelper.instance;
+    final profile = await db.database.then((db) => db.query(
+          'user_profiles',
+          where: 'iduser = ?',
+          whereArgs: [widget.userId],
+        ));
+
+    if (profile.isNotEmpty) {
+      setState(() {
+        name = profile[0]['nama'] as String?;
+        email = profile[0]['email'] as String?;
+        address = profile[0]['alamat'] as String?;
+        phone = profile[0]['notlp'] as String?;
+        photoUrl = profile[0]['foto'] as String?;
+      });
+    }
+  }
+
   Future<void> _pickImage() async {
     final imagePicker = ImagePicker();
     final pickedImage =
@@ -31,11 +56,13 @@ class _UbahProfileState extends State<UbahProfile> {
   }
 
   Future<void> _updateProfile() async {
+    // Validasi form terlebih dahulu
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final db = DatabaseHelper.instance;
 
       try {
+        // Simpan data ke database
         await db.database.then((db) => db.update(
               'user_profiles',
               {
@@ -43,14 +70,28 @@ class _UbahProfileState extends State<UbahProfile> {
                 'email': email,
                 'alamat': address,
                 'notlp': phone,
-                'foto': photoUrl,
+                'foto': photoUrl, // Path foto baru jika ada
               },
               where: 'iduser = ?',
               whereArgs: [widget.userId],
             ));
 
-        // Mengirimkan kembali userId ke halaman sebelumnya
-        Navigator.pop(context, widget.userId);
+        // Ambil data terbaru dari tabel setelah pembaruan
+        final updatedProfile = await db.database.then((db) => db.query(
+              'user_profiles',
+              where: 'iduser = ?',
+              whereArgs: [widget.userId],
+            ));
+
+        if (updatedProfile.isNotEmpty) {
+          // Mengambil data dari hasil query
+          final userId = updatedProfile[0]['iduser'];
+
+          // Navigasi kembali ke Dashboard dan memicu refresh
+          Navigator.pop(context, {'userId': userId, 'success': true});
+        } else {
+          throw Exception('Profil tidak ditemukan');
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Gagal memperbarui profil: $e')),
@@ -87,21 +128,22 @@ class _UbahProfileState extends State<UbahProfile> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage:
-                          photoUrl != null ? FileImage(File(photoUrl!)) : null,
+                      backgroundImage: photoUrl != null && photoUrl!.isNotEmpty
+                          ? FileImage(File(photoUrl!))
+                          : null,
                       backgroundColor: Colors.grey.shade300,
                       child: photoUrl == null
                           ? const Icon(Icons.manage_accounts_sharp,
                               size: 50, color: Colors.white)
                           : null,
                     ),
-                    Positioned(
+                    const Positioned(
                       bottom: 0,
                       right: 4,
                       child: CircleAvatar(
                         radius: 14,
                         backgroundColor: Colors.blueAccent,
-                        child: const Icon(
+                        child: Icon(
                           Icons.add,
                           size: 18,
                           color: Colors.white,
@@ -112,21 +154,25 @@ class _UbahProfileState extends State<UbahProfile> {
                 ),
               ),
               TextFormField(
+                initialValue: name,
                 decoration: const InputDecoration(labelText: 'Nama'),
                 validator: (value) =>
                     value!.isEmpty ? 'Nama wajib diisi' : null,
                 onSaved: (value) => name = value,
               ),
               TextFormField(
+                initialValue: email,
                 decoration: const InputDecoration(labelText: 'Email'),
                 validator: _validateEmail,
                 onSaved: (value) => email = value,
               ),
               TextFormField(
+                initialValue: address,
                 decoration: const InputDecoration(labelText: 'Alamat'),
                 onSaved: (value) => address = value,
               ),
               TextFormField(
+                initialValue: phone,
                 decoration: const InputDecoration(labelText: 'No. Telp'),
                 onSaved: (value) => phone = value,
               ),

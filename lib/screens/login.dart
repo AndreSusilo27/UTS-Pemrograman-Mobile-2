@@ -34,22 +34,43 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() {
       _isLoading = true;
-      _errorMessage = null;
+      _errorMessage = null; // Reset pesan error
     });
 
-    final username = _usernameController.text;
-    final password = _passwordController.text;
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Validasi input
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Username dan password tidak boleh kosong.";
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_errorMessage!)),
+      );
+      return;
+    }
 
     try {
+      // Mengotentikasi pengguna dan mengambil profil pengguna
       Map<String, dynamic>? userProfile = await DatabaseHelper.instance
           .authenticateAndFetchUser(username, password);
 
+      // Reset loading state sebelum memeriksa hasil
       setState(() {
         _isLoading = false;
       });
 
+      // Memeriksa apakah profil pengguna berhasil didapat
       if (userProfile != null) {
-        _loginAttempts = 0;
+        _loginAttempts = 0; // Reset percobaan login jika berhasil
+
+        // Check if the photo URL is empty or null, assign default if so
+        String userPhoto = userProfile['foto']?.isNotEmpty == true
+            ? userProfile['foto']
+            : 'assets/default_avatar.jpeg'; // Default avatar path
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -57,14 +78,16 @@ class _LoginPageState extends State<LoginPage> {
               username: userProfile['username'],
               name: userProfile['name'],
               email: userProfile['email'],
+              foto: userPhoto, // Pass the correct photo
             ),
           ),
         );
       } else {
+        // Jika pengguna tidak ada, tingkatkan percobaan login
         _loginAttempts++;
         if (_loginAttempts >= _maxAttempts) {
           setState(() {
-            _isLocked = true;
+            _isLocked = true; // Kunci akun
           });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -74,10 +97,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
 
+          // Reset kunci setelah 10 detik
           Future.delayed(const Duration(seconds: 10), () {
             setState(() {
               _isLocked = false;
-              _loginAttempts = 0;
+              _loginAttempts = 0; // Reset percobaan
             });
           });
         } else {
@@ -91,8 +115,9 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     } catch (e) {
+      // Menangani kesalahan yang mungkin terjadi
       setState(() {
-        _isLoading = false;
+        _isLoading = false; // Reset loading state
         _errorMessage = "Terjadi kesalahan, silakan coba lagi.";
       });
       ScaffoldMessenger.of(context).showSnackBar(

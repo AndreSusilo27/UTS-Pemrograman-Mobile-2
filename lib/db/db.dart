@@ -116,14 +116,18 @@ class DatabaseHelper {
 
   Future<Map<String, dynamic>?> authenticateAndFetchUser(
       String username, String password) async {
+    // Pastikan database telah diinisialisasi dengan benar
     final db = await database;
 
+    // Ambil data user berdasarkan username
     final user = await getUserByUsername(username);
     if (user == null) return null;
 
+    // Proses hashing password
     String salt = user['salt'];
     String hashedPassword = _hashPassword(password, salt);
 
+    // Query untuk mengambil data user yang cocok
     final result = await db.rawQuery('''
     SELECT users.id AS userId, users.username, user_profiles.nama AS name, user_profiles.email
     FROM users
@@ -131,7 +135,12 @@ class DatabaseHelper {
     WHERE users.username = ? AND users.password = ?
   ''', [username, hashedPassword]);
 
-    return result.isNotEmpty ? result.first : null;
+    // Mengembalikan hasil dalam bentuk Map jika data ditemukan
+    if (result.isNotEmpty) {
+      return Map<String, dynamic>.from(result.first);
+    } else {
+      return null;
+    }
   }
 
   Future<List<Map<String, dynamic>>> getAllUsers() async {
@@ -152,20 +161,17 @@ class DatabaseHelper {
   }
 
   Future<Map<String, dynamic>?> getUserJoinedData(String username) async {
-    final db = await instance.database;
+    final db = await database;
 
+    // Lakukan query untuk mengambil data pengguna bergabung dengan tabel profil
     final result = await db.rawQuery('''
-    SELECT users.*, user_profiles.*
+    SELECT users.id AS userId, users.username, user_profiles.nama, user_profiles.email, user_profiles.foto
     FROM users
-    JOIN user_profiles ON users.id = user_profiles.iduser
+    INNER JOIN user_profiles ON users.id = user_profiles.iduser
     WHERE users.username = ?
   ''', [username]);
 
-    if (result.isNotEmpty) {
-      return result.first;
-    } else {
-      return null;
-    }
+    return result.isNotEmpty ? result.first : null;
   }
 
   Future<int?> getIdUserByEmail(String email) async {

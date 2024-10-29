@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pemmob2/screens/ubahprofile.dart';
 import 'package:pemmob2/db/db.dart';
@@ -16,10 +17,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _Datalengkap();
   }
 
-  Future<void> _fetchUserData() async {
+  Future<void> _Datalengkap() async {
     final db = DatabaseHelper.instance;
     final result = await db.database.then((db) => db.rawQuery('''
       SELECT users.username, user_profiles.nama, user_profiles.email, 
@@ -55,9 +56,26 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Kondisi untuk menampilkan foto profil atau default jika foto kosong
               userData!['foto'] != null && userData!['foto'].isNotEmpty
-                  ? Image.network(userData!['foto'], width: 100, height: 100)
-                  : const Icon(Icons.account_circle, size: 100),
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.file(
+                        File(userData!['foto']),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.asset(
+                        'assets/default_avatar.jpeg',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
               const SizedBox(height: 10),
               Text(userData!['username'], style: const TextStyle(fontSize: 20)),
               Text('Nama: ${userData!['nama']}'),

@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/screens/login.dart';
-import 'package:pemmob2/screens/profile.dart';
 import 'package:pemmob2/screens/ubahprofile.dart';
 import 'package:pemmob2/screens/tentang.dart';
 
@@ -10,8 +11,15 @@ class Dashboard extends StatefulWidget {
   final String username;
   final String name;
   final String email;
+  final String? foto; // Buat opsional dengan tipe nullable
 
-  Dashboard({required this.username, required this.name, required this.email});
+  const Dashboard({
+    super.key,
+    required this.username,
+    required this.name,
+    required this.email,
+    this.foto, // Foto tetap nullable
+  });
 
   @override
   _DashboardState createState() => _DashboardState();
@@ -21,12 +29,13 @@ class _DashboardState extends State<Dashboard> {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   String _nama = '';
   String _email = '';
+  String _foto = 'assets/default_avatar.jpeg'; // Set foto default
   int? _userId;
 
   @override
   void initState() {
     super.initState();
-    _getUserProfile();
+    _refresh();
   }
 
   Future<void> _getUserProfile() async {
@@ -36,6 +45,10 @@ class _DashboardState extends State<Dashboard> {
         _nama = user['nama'] ?? '';
         _email = user['email'] ?? '';
         _userId = user['id'];
+        // Mengambil foto, jika ada
+        _foto = user['foto'] != null && user['foto']!.isNotEmpty
+            ? user['foto'] // Jika ada, gunakan foto dari database
+            : 'assets/default_avatar.jpeg'; // Jika tidak ada, gunakan foto default
       });
     } else {
       print('Pengguna tidak ditemukan');
@@ -46,19 +59,26 @@ class _DashboardState extends State<Dashboard> {
     await _getUserProfile();
   }
 
-  void _navigateToProfile(BuildContext context) async {
-    final userId = await _databaseHelper.getIdUserByEmail(widget.email);
+  Future<void> _navigateToProfile(BuildContext context) async {
+    _userId = await _databaseHelper.getIdUserByEmail(widget.email);
 
-    if (userId != null) {
-      Navigator.push(
+    if (_userId != null) {
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ProfilePage(userId: userId),
+          builder: (context) => UbahProfile(userId: _userId!),
         ),
       );
+
+      // Periksa jika hasilnya adalah true, maka panggil fungsi _refresh
+      if (result != null && result == true) {
+        setState(() {
+          _refresh();
+        });
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User ID tidak ditemukan')),
+        const SnackBar(content: Text('User ID tidak ditemukan')),
       );
     }
   }
@@ -68,22 +88,22 @@ class _DashboardState extends State<Dashboard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Konfirmasi Logout"),
-          content: Text("Apakah Anda yakin ingin keluar dari aplikasi?"),
+          title: const Text("Konfirmasi Logout"),
+          content: const Text("Apakah Anda yakin ingin keluar dari aplikasi?"),
           actions: <Widget>[
             TextButton(
-              child: Text("Tidak"),
+              child: const Text("Tidak"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Ya"),
+              child: const Text("Ya"),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
             ),
@@ -93,14 +113,23 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void _openSettingsPage() {
+  Future<void> _openSettingsPage() async {
+    _userId = await _databaseHelper.getIdUserByEmail(widget.email);
+
     if (_userId != null) {
-      Navigator.push(
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => UbahProfile(userId: _userId!),
         ),
       );
+
+      // Periksa jika hasilnya adalah true, maka panggil fungsi _refresh
+      if (result != null && result == true) {
+        setState(() {
+          _refresh();
+        });
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('User ID tidak ditemukan')),
@@ -177,7 +206,8 @@ class _DashboardState extends State<Dashboard> {
         backgroundColor: Colors.deepPurple.shade600,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
+            icon:
+                const Icon(Icons.manage_accounts_outlined, color: Colors.white),
             onPressed: _openSettingsPage,
           ),
         ],
@@ -228,7 +258,11 @@ class _DashboardState extends State<Dashboard> {
                   children: [
                     CircleAvatar(
                       radius: 65,
-                      backgroundImage: AssetImage('assets/default_avatar.jpeg'),
+                      backgroundImage:
+                          (_foto.isNotEmpty && File(_foto).existsSync())
+                              ? FileImage(File(_foto))
+                              : const AssetImage('assets/default_avatar.jpeg')
+                                  as ImageProvider<Object>,
                       backgroundColor: Colors.grey[300],
                     ),
                     const SizedBox(height: 16),
@@ -239,9 +273,9 @@ class _DashboardState extends State<Dashboard> {
                         fontSize: 20,
                         letterSpacing: 1.1,
                         foreground: Paint()
-                          ..shader = LinearGradient(
+                          ..shader = const LinearGradient(
                             colors: [Colors.blueAccent, Colors.purpleAccent],
-                          ).createShader(Rect.fromLTWH(0, 0, 200, 70)),
+                          ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -289,19 +323,17 @@ class _DashboardState extends State<Dashboard> {
                     color: Colors.white),
                 title: const Text("Profile",
                     style: TextStyle(color: Colors.white)),
-                tileColor: Colors.deepPurple.shade400.withOpacity(0.3),
+                tileColor: Colors.deepPurple.shade600,
                 onTap: () {
-                  Navigator.pop(context);
                   _navigateToProfile(context);
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.info, color: Colors.white),
-                title:
-                    const Text("About", style: TextStyle(color: Colors.white)),
-                tileColor: Colors.deepPurple.shade400.withOpacity(0.3),
+                leading: const Icon(Icons.info_outline, color: Colors.white),
+                title: const Text("Tentang Aplikasi",
+                    style: TextStyle(color: Colors.white)),
+                tileColor: Colors.deepPurple.shade600,
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Tentang()),
@@ -312,11 +344,8 @@ class _DashboardState extends State<Dashboard> {
                 leading: const Icon(Icons.logout, color: Colors.white),
                 title:
                     const Text("Logout", style: TextStyle(color: Colors.white)),
-                tileColor: Colors.deepPurple.shade400.withOpacity(0.3),
-                onTap: () {
-                  Navigator.pop(context);
-                  _logout();
-                },
+                tileColor: Colors.deepPurple.shade600,
+                onTap: _logout,
               ),
             ],
           ),
