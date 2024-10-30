@@ -134,7 +134,7 @@ class _UbahProfileState extends State<UbahProfile> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          'Ubah Profile',
+          'Profile',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.deepPurple[900],
