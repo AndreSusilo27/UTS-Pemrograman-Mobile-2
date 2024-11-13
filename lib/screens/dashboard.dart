@@ -133,7 +133,7 @@ class _DashboardState extends State<Dashboard> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User ID tidak ditemukan')),
+        const SnackBar(content: Text('User ID tidak ditemukan')),
       );
     }
   }

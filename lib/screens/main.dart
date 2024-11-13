@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
       // Pindah ke halaman login setelah loading
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     });
   }
@@ -138,6 +138,19 @@ class _HomePageState extends State<HomePage> {
               // Tombol login
               ElevatedButton(
                 onPressed: _isLoading ? null : _handleLogin,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent.shade700,
+                  minimumSize: const Size(
+                    200, // Lebar tombol
+                    60, // Tinggi tombol
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10), // Border radius tombol
+                  ),
+                  elevation: 8, // Bayangan tombol
+                  shadowColor: Colors.black45, // Warna bayangan
+                ),
                 child: _isLoading
                     ? const SizedBox(
                         height: 24,
@@ -154,19 +167,6 @@ class _HomePageState extends State<HomePage> {
                           fontSize: 18,
                         ),
                       ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent.shade700,
-                  minimumSize: const Size(
-                    200, // Lebar tombol
-                    60, // Tinggi tombol
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(10), // Border radius tombol
-                  ),
-                  elevation: 8, // Bayangan tombol
-                  shadowColor: Colors.black45, // Warna bayangan
-                ),
               ),
               const SizedBox(height: 20), // Spasi di bawah tombol
             ],

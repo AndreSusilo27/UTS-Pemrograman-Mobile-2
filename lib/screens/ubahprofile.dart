@@ -6,7 +6,7 @@ import 'package:pemmob2/db/db.dart';
 class UbahProfile extends StatefulWidget {
   final int userId;
 
-  const UbahProfile({Key? key, required this.userId}) : super(key: key);
+  const UbahProfile({super.key, required this.userId});
 
   @override
   _UbahProfileState createState() => _UbahProfileState();
@@ -132,15 +132,15 @@ class _UbahProfileState extends State<UbahProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
           'Profile',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.deepPurple[900],
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _confirmUpdate,
           ),
         ],
@@ -177,11 +177,11 @@ class _UbahProfileState extends State<UbahProfile> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage:
-                              (photoUrl != null && photoUrl!.isNotEmpty)
-                                  ? FileImage(File(photoUrl!))
-                                  : AssetImage('assets/default_avatar.jpeg')
-                                      as ImageProvider, // Default photo
+                          backgroundImage: (photoUrl != null &&
+                                  photoUrl!.isNotEmpty)
+                              ? FileImage(File(photoUrl!))
+                              : const AssetImage('assets/default_avatar.jpeg')
+                                  as ImageProvider, // Default photo
                           backgroundColor: Colors.grey.shade300,
                           child: photoUrl == null
                               ? const Icon(

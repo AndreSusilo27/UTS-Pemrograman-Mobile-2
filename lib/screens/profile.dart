@@ -46,15 +46,15 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     if (userData == null) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white,
         ),
-        title: Text(
+        title: const Text(
           'Ubah Profile',
           style: TextStyle(
             color: Colors.white,
@@ -106,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       image: userData!['foto'] != null &&
                               userData!['foto'].isNotEmpty
                           ? FileImage(File(userData!['foto']))
-                          : AssetImage('assets/default_avatar.jpeg')
+                          : const AssetImage('assets/default_avatar.jpeg')
                               as ImageProvider,
                       fit: BoxFit.cover,
                     ),
@@ -125,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     foreground: Paint()
-                      ..shader = LinearGradient(
+                      ..shader = const LinearGradient(
                         colors: [Colors.blueAccent, Colors.lightBlueAccent],
                       ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
                   ),
@@ -143,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.circular(30),
               ),
               elevation: 3,
-              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -172,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(
             width: 90,
             child: Text(
-              '$title',
+              title,
               style: GoogleFonts.roboto(
                 color: Colors.white,
                 fontSize: 18,

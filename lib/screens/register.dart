@@ -134,7 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    final emailPattern = r'^[^@]+@[^@]+\.[^@]+';
+    const emailPattern = r'^[^@]+@[^@]+\.[^@]+';
     if (!RegExp(emailPattern).hasMatch(_emailController.text)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
