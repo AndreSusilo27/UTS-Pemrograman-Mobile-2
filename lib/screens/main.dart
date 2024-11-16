@@ -1,3 +1,7 @@
+// Andre Susilo
+// 21552011246
+// Teknik Informatika
+// UTS Pemrograman Mobile 2
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/screens/login.dart';
@@ -26,7 +30,7 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -37,12 +41,10 @@ class _HomePageState extends State<HomePage> {
       _isLoading = true;
     });
 
-    // Loading animasi yang lebih cepat, hanya 0,5 detik
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
         _isLoading = false;
       });
-      // Pindah ke halaman login setelah loading
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -53,24 +55,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.deepPurple.shade700,
-              Colors.black, // Ubah ke Black accent
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: DefaultTabController(
+        length: 2,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurple.shade700, Colors.black],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Judul aplikasi
               ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
                   colors: [Colors.blueAccent, Colors.cyan],
@@ -88,7 +87,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Sambutan
               const Text(
                 'Selamat Datang di Aplikasi Andre APP',
                 style: TextStyle(
@@ -99,57 +97,27 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              // Animasi teks
               AnimatedTextKit(
                 animatedTexts: [
-                  TypewriterAnimatedText(
-                    'Aplikasi Pemrograman Mobile 2',
-                    textStyle: const TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    speed: const Duration(milliseconds: 120),
-                  ),
-                  TypewriterAnimatedText(
-                    'Aplikasi Android Dengan Flutter',
-                    textStyle: const TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    speed: const Duration(milliseconds: 120),
-                  ),
-                  TypewriterAnimatedText(
-                    'Menggunakan Bahasa Dart',
-                    textStyle: const TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    speed: const Duration(milliseconds: 120),
-                  ),
+                  _buildTypewriterText('Aplikasi Pemrograman Mobile 2'),
+                  _buildTypewriterText('Aplikasi Android Dengan Flutter'),
+                  _buildTypewriterText('Menggunakan Bahasa Dart'),
                 ],
                 repeatForever: true,
                 pause: const Duration(seconds: 2),
                 displayFullTextOnTap: true,
               ),
-              const SizedBox(height: 40), // Spasi di bawah animasi
-              // Tombol login
+              const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: _isLoading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent.shade700,
-                  minimumSize: const Size(
-                    200, // Lebar tombol
-                    60, // Tinggi tombol
-                  ),
+                  minimumSize: const Size(200, 60),
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(10), // Border radius tombol
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  elevation: 8, // Bayangan tombol
-                  shadowColor: Colors.black45, // Warna bayangan
+                  elevation: 8,
+                  shadowColor: Colors.black45,
                 ),
                 child: _isLoading
                     ? const SizedBox(
@@ -168,11 +136,23 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
               ),
-              const SizedBox(height: 20), // Spasi di bawah tombol
+              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+TypewriterAnimatedText _buildTypewriterText(String text) {
+  return TypewriterAnimatedText(
+    text,
+    textStyle: const TextStyle(
+      fontSize: 20.0,
+      color: Colors.white,
+      fontWeight: FontWeight.w500,
+    ),
+    speed: const Duration(milliseconds: 120),
+  );
 }

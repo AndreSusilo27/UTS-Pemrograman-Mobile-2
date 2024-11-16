@@ -9,7 +9,7 @@ class UbahProfile extends StatefulWidget {
   const UbahProfile({super.key, required this.userId});
 
   @override
-  _UbahProfileState createState() => _UbahProfileState();
+  State<UbahProfile> createState() => _UbahProfileState();
 }
 
 class _UbahProfileState extends State<UbahProfile> {

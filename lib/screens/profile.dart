@@ -10,7 +10,7 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.userId});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -127,7 +127,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     foreground: Paint()
                       ..shader = const LinearGradient(
                         colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                      ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+                      ).createShader(
+                          const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
                   ),
                   speed: const Duration(milliseconds: 170),
                 ),
