@@ -414,8 +414,8 @@ class _DashboardState extends State<Dashboard> {
                 tileColor: Colors.deepPurple.shade600,
               ),
               customListTile(
-                icon: Icons.assignment_add,
-                title: "Tambah Barang",
+                icon: Icons.info_outline_rounded,
+                title: "Tentang",
                 context: context,
                 destinationPage: const Tentang(),
                 iconColor: Colors.white,
