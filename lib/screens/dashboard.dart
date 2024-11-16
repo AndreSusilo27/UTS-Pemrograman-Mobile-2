@@ -5,6 +5,7 @@ import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/screens/login.dart';
 import 'package:pemmob2/screens/profile.dart';
+import 'package:pemmob2/screens/tambahbarang.dart';
 import 'package:pemmob2/screens/ubahprofile.dart';
 import 'package:pemmob2/screens/tentang.dart';
 
@@ -256,10 +257,22 @@ class _DashboardState extends State<Dashboard> {
         ),
         backgroundColor: Colors.deepPurple.shade600,
         actions: [
-          IconButton(
-            icon:
-                const Icon(Icons.manage_accounts_outlined, color: Colors.white),
-            onPressed: _openSettingsPage,
+          // IconButton(
+          //   icon:
+          //       const Icon(Icons.manage_accounts_outlined, color: Colors.white),
+          //   onPressed: _openSettingsPage,
+          // ),
+          // Foto di pojok kanan AppBar
+          Padding(
+            padding: const EdgeInsets.only(right: 22.0),
+            child: CircleAvatar(
+              radius: 18, // Ukuran lingkaran
+              backgroundImage: (_foto.isNotEmpty && File(_foto).existsSync())
+                  ? FileImage(File(_foto))
+                  : const AssetImage('assets/default_avatar.jpeg')
+                      as ImageProvider<Object>,
+              backgroundColor: Colors.grey[300],
+            ),
           ),
         ],
         elevation: 5,
@@ -369,27 +382,45 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.account_circle_outlined,
-                    color: Colors.white),
-                title: const Text("Profile",
-                    style: TextStyle(color: Colors.white)),
+              customListTile(
+                icon: Icons.assignment_add,
+                title: "Tambah Barang",
+                context: context,
+                destinationPage: const TambahBarangPage(),
+                iconColor: Colors.white,
+                textColor: Colors.white,
                 tileColor: Colors.deepPurple.shade600,
+              ),
+              customListTile(
+                icon: Icons.account_circle_outlined,
+                title: "Profile",
+                context: context,
                 onTap: () {
                   _openProfilePage(context);
                 },
-              ),
-              ListTile(
-                leading: const Icon(Icons.info_outline, color: Colors.white),
-                title: const Text("Tentang Aplikasi",
-                    style: TextStyle(color: Colors.white)),
+                iconColor: Colors.white,
+                textColor: Colors.white,
                 tileColor: Colors.deepPurple.shade600,
+              ),
+              customListTile(
+                icon: Icons.manage_accounts_outlined,
+                title: "Setting Profile",
+                context: context,
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Tentang()),
-                  );
+                  _openSettingsPage();
                 },
+                iconColor: Colors.white,
+                textColor: Colors.white,
+                tileColor: Colors.deepPurple.shade600,
+              ),
+              customListTile(
+                icon: Icons.assignment_add,
+                title: "Tambah Barang",
+                context: context,
+                destinationPage: const Tentang(),
+                iconColor: Colors.white,
+                textColor: Colors.white,
+                tileColor: Colors.deepPurple.shade600,
               ),
               ListTile(
                 leading: const Icon(Icons.logout, color: Colors.white),
@@ -423,12 +454,22 @@ class _DashboardState extends State<Dashboard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "Selamat Datang di Dashboard!",
+                      "Dashboard",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    widgetContainer(
+                      context,
+                      horizontalGrid(
+                          context), // Memasukkan verticalGrid sebagai konten
+                      title: "Statistik", // Judul yang diinginkan
+                      height: 255,
+                      isCentered: true, // Tinggi yang disesuaikan
                     ),
                     const SizedBox(height: 20),
                     DefaultTabController(
@@ -474,7 +515,7 @@ class _DashboardState extends State<Dashboard> {
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.white.withOpacity(0.6),
                               border: Border.all(
                                 color: Colors.deepPurple.shade300,
                                 width: 0.2,
@@ -492,11 +533,11 @@ class _DashboardState extends State<Dashboard> {
                               height: MediaQuery.of(context).size.height * 0.4,
                               child: TabBarView(
                                 children: [
-                                  buildVerticalGridView(context),
-                                  buildVerticalListView(context),
-                                  buildProductTable(context),
-                                  buildPieChart(context),
-                                  buildBarChart(context),
+                                  verticalGrid(context),
+                                  verticalListView(context),
+                                  produkTabel(context),
+                                  pieChart(context),
+                                  barChart(context),
                                 ],
                               ),
                             ),
@@ -505,49 +546,16 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      height: 240, // Tinggi kotak keseluruhan
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 5), // Margin luar
-                        padding: const EdgeInsets.all(10), // Padding dalam
-                        decoration: BoxDecoration(
-                          color: Colors.white, // Latar belakang putih
-                          borderRadius:
-                              BorderRadius.circular(10), // Sudut membulat
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey
-                                  .withOpacity(0.3), // Warna bayangan
-                              blurRadius: 10, // Tingkat blur bayangan
-                              offset: const Offset(0, 4), // Posisi bayangan
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start, // Teks rata kiri
-                          children: [
-                            const Text(
-                              "Statistik",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                            const SizedBox(
-                                height: 10), // Spasi antara judul dan konten
-                            Expanded(
-                              child: buildHorizontalStatGrid(
-                                  context), // Widget yang Anda panggil
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    buildHorizontalStatGrid(context),
+                    widgetContainer(context, verticalGrid(context),
+                        title: "Produk", isCentered: true),
+                    const SizedBox(height: 20),
+                    widgetContainer(context, verticalListView(context),
+                        title: "Laporan", isCentered: true),
+                    const SizedBox(height: 20),
+                    widgetContainer(context, produkTabel(context),
+                        title: "Stok", isCentered: true),
+                    const SizedBox(height: 20),
+                    horizontalGrid(context),
                     const SizedBox(height: 20),
                     // Informasi Pengguna
                     Container(
@@ -643,7 +651,111 @@ class _DashboardState extends State<Dashboard> {
   }
 }
 
-Widget buildProductTable(BuildContext context) {
+Widget customListTile({
+  required IconData icon,
+  required String title,
+  required BuildContext context,
+  Color iconColor = Colors.white,
+  Color textColor = Colors.white,
+  Color tileColor = Colors.deepPurple,
+  VoidCallback? onTap, // Callback opsional untuk aksi
+  Widget? destinationPage, // Halaman tujuan opsional
+}) {
+  return ListTile(
+    leading: Icon(icon, color: iconColor),
+    title: Text(
+      title,
+      style: TextStyle(color: textColor),
+    ),
+    tileColor: tileColor,
+    onTap: onTap ??
+        () {
+          if (destinationPage != null) {
+            // Navigasi ke halaman jika destinationPage disediakan
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => destinationPage),
+            );
+          }
+        },
+  );
+}
+
+Widget widgetContainer(
+  BuildContext context,
+  Widget child, {
+  String title = "Judul",
+  bool isCentered = false,
+  double? width, // Lebar yang dapat disesuaikan
+  double? height, // Tinggi yang dapat disesuaikan
+}) {
+  return SizedBox(
+    width: width, // Gunakan lebar yang diberikan, jika ada
+    height: height ?? 340, // Gunakan tinggi yang diberikan, atau default 340
+    child: Container(
+      margin:
+          const EdgeInsets.symmetric(horizontal: 5, vertical: 5), // Margin luar
+      padding: const EdgeInsets.all(10), // Padding dalam
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(
+            0.6), // Transparansi lebih banyak untuk container utama
+        borderRadius: BorderRadius.circular(15), // Sudut membulat lebih besar
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2), // Warna bayangan lebih gelap
+            blurRadius: 15, // Tingkat blur bayangan yang lebih besar
+            offset: const Offset(0, 6), // Posisi bayangan lebih terlihat
+          ),
+        ],
+        border: Border.all(
+          color: Colors.deepPurple
+              .withOpacity(0.2), // Border lebih tipis dan transparan
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: isCentered
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start, // Menentukan posisi judul
+        children: [
+          Container(
+            width: double.infinity, // Membuat background judul penuh
+            padding: const EdgeInsets.symmetric(
+                vertical: 8, horizontal: 12), // Padding dalam judul
+            decoration: BoxDecoration(
+              color: Colors.deepPurple.withOpacity(
+                  0.9), // Warna latar belakang judul dengan transparansi
+              borderRadius: BorderRadius.circular(12), // Sudut membulat
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3), // Bayangan judul
+                  blurRadius: 10, // Tingkat blur bayangan
+                  offset: const Offset(0, 4), // Posisi bayangan judul
+                ),
+              ],
+            ),
+            child: Text(
+              title, // Menggunakan parameter title untuk judul
+              textAlign: isCentered
+                  ? TextAlign.center
+                  : TextAlign
+                      .left, // Menentukan apakah teks di tengah atau tidak
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // Warna teks judul
+              ),
+            ),
+          ),
+          const SizedBox(height: 10), // Spasi antara judul dan konten
+          Expanded(child: child), // Konten yang bisa diisi dengan widget lain
+        ],
+      ),
+    ),
+  );
+}
+
+Widget produkTabel(BuildContext context) {
   final List<Map<String, dynamic>> productData = [
     {
       "name": "Laptop",
@@ -769,7 +881,7 @@ Widget buildProductTable(BuildContext context) {
 }
 
 // Fungsi untuk membuat Card statistik
-Widget _ListViewStat(String title, String count, IconData icon, double d) {
+Widget listViewStat(String title, String count, IconData icon, double d) {
   return Container(
     width: 100,
     padding: const EdgeInsets.all(15.0),
@@ -810,7 +922,7 @@ Widget _ListViewStat(String title, String count, IconData icon, double d) {
 }
 
 // Fungsi untuk membuat Card statistik
-Widget _GridStat(String title, String count, IconData icon) {
+Widget gridStat(String title, String count, IconData icon) {
   return Container(
     padding: const EdgeInsets.all(15.0),
     decoration: BoxDecoration(
@@ -850,7 +962,7 @@ Widget _GridStat(String title, String count, IconData icon) {
 }
 
 // Widget untuk GridView Horizontal dalam SizedBox
-Widget buildHorizontalStatGrid(BuildContext context) {
+Widget horizontalGrid(BuildContext context) {
   List<Map<String, dynamic>> statData = [
     {
       "title": "Total Barang",
@@ -885,7 +997,7 @@ Widget buildHorizontalStatGrid(BuildContext context) {
             padding: const EdgeInsets.only(right: 12.0),
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.3,
-              child: _GridStat(
+              child: gridStat(
                 statData[index]["title"],
                 statData[index]["count"],
                 statData[index]["icon"],
@@ -898,16 +1010,16 @@ Widget buildHorizontalStatGrid(BuildContext context) {
   );
 }
 
-Widget buildVerticalGridView(BuildContext context) {
+Widget verticalGrid(BuildContext context) {
   final items = List.generate(10, (index) => "Item ${index + 1}");
 
   return Padding(
-    padding: const EdgeInsets.all(16),
+    padding: const EdgeInsets.all(10),
     child: GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Dua kolom dalam grid
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+        crossAxisSpacing: 13,
+        mainAxisSpacing: 13,
         childAspectRatio: 3 / 2, // Rasio lebar:tinggi
       ),
       itemCount: items.length,
@@ -943,7 +1055,7 @@ Widget buildVerticalGridView(BuildContext context) {
 }
 
 // Widget untuk GridView Horizontal dalam SizedBox
-Widget buildHorizontalStatListView(BuildContext context) {
+Widget horizontalListView(BuildContext context) {
   return SizedBox(
     height: MediaQuery.of(context).size.height * 0.2,
     child: ListView.builder(
@@ -980,7 +1092,7 @@ Widget buildHorizontalStatListView(BuildContext context) {
         ];
         return Padding(
           padding: const EdgeInsets.only(right: 12.0),
-          child: _ListViewStat(
+          child: listViewStat(
             statData[index]["title"],
             statData[index]["count"],
             statData[index]["icon"],
@@ -992,7 +1104,7 @@ Widget buildHorizontalStatListView(BuildContext context) {
   );
 }
 
-Widget buildVerticalListView(BuildContext context) {
+Widget verticalListView(BuildContext context) {
   final items = List.generate(10, (index) => "Item ${index + 1}");
 
   return ListView.separated(
@@ -1028,7 +1140,7 @@ Widget buildVerticalListView(BuildContext context) {
   );
 }
 
-Widget buildPieChart(BuildContext context) {
+Widget pieChart(BuildContext context) {
   return SingleChildScrollView(
     child: Card(
       elevation: 4,
@@ -1172,7 +1284,7 @@ Widget buildPieChart(BuildContext context) {
   );
 }
 
-Widget buildBarChart(BuildContext context) {
+Widget barChart(BuildContext context) {
   return Card(
     elevation: 4,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

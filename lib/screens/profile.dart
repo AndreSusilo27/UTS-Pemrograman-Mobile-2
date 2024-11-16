@@ -19,10 +19,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _Datalengkap();
+    _datalengkap();
   }
 
-  Future<void> _Datalengkap() async {
+  Future<void> _datalengkap() async {
     final db = DatabaseHelper.instance;
     final result = await db.database.then((db) => db.rawQuery('''
       SELECT users.username, user_profiles.nama, user_profiles.email, 
