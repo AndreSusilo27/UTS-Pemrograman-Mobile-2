@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pemmob2/db/db.dart';
+import 'package:pemmob2/model/modelcolor.dart';
 
 class UbahProfile extends StatefulWidget {
   final int userId;
@@ -134,10 +135,10 @@ class _UbahProfileState extends State<UbahProfile> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
-          'Profile',
+          'Setting Profile',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.deepPurple[900],
+        backgroundColor: Modelcolor.primaryDark,
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
@@ -149,7 +150,7 @@ class _UbahProfileState extends State<UbahProfile> {
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.deepPurple.shade600, Colors.black87],
+            colors: [Modelcolor.primaryDark2, Modelcolor.backgroundDark],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/db/db.dart';
+import 'package:pemmob2/model/modelcolor.dart';
 
 class ProfilePage extends StatefulWidget {
   final int userId;
@@ -55,18 +56,21 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Colors.white,
         ),
         title: const Text(
-          'Ubah Profile',
+          'Profile',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.deepPurple[900],
+        backgroundColor: Modelcolor.primaryDark,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.deepPurple.shade600, Colors.black87],
+            colors: [
+              Modelcolor.primaryDark2,
+              Modelcolor.backgroundDark,
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -121,20 +125,17 @@ class _ProfilePageState extends State<ProfilePage> {
               animatedTexts: [
                 TypewriterAnimatedText(
                   '@${userData!['username']}',
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    foreground: Paint()
-                      ..shader = const LinearGradient(
-                        colors: [Colors.blueAccent, Colors.lightBlueAccent],
-                      ).createShader(
-                          const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+                    color: Modelcolor.textLight,
                   ),
-                  speed: const Duration(milliseconds: 170),
+                  speed: const Duration(milliseconds: 170), // Kecepatan animasi
                 ),
               ],
-              isRepeatingAnimation: false,
+              isRepeatingAnimation: false, // Animasi tidak akan berulang
             ),
+
             const SizedBox(height: 20),
 
             // Informasi profil dalam card

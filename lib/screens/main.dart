@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Andre APP',
+      title: 'Sikoin',
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),

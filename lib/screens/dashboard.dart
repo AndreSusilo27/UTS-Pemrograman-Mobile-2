@@ -3,11 +3,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:pemmob2/screens/barangkeluar.dart';
+import 'package:pemmob2/screens/barangmasuk.dart';
+import 'package:pemmob2/screens/laporan.dart';
 import 'package:pemmob2/screens/login.dart';
 import 'package:pemmob2/screens/profile.dart';
 import 'package:pemmob2/screens/tambahbarang.dart';
 import 'package:pemmob2/screens/ubahprofile.dart';
 import 'package:pemmob2/screens/tentang.dart';
+
+import 'package:pemmob2/model/costumcontainer.dart';
+import 'package:pemmob2/model/grid.dart';
+import 'package:pemmob2/model/listview.dart';
+import 'package:pemmob2/model/modelcolor.dart';
 
 import 'dart:math' as math;
 import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
@@ -246,8 +254,8 @@ class _DashboardState extends State<Dashboard> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           colors: [
-            Color.fromARGB(255, 207, 155, 1), // 1
-            Colors.amber, // 2
+            Color.fromARGB(255, 233, 177, 7), // 1
+            Color.fromARGB(255, 255, 196, 19), // 2
             Colors.amber, // 3
             Colors.white,
           ],
@@ -255,13 +263,8 @@ class _DashboardState extends State<Dashboard> {
           transform:
               GradientRotation(math.pi / 4), // Menambahkan transformasi rotasi
         ),
-        backgroundColor: Colors.deepPurple.shade600,
+        backgroundColor: Modelcolor.primaryDark,
         actions: [
-          // IconButton(
-          //   icon:
-          //       const Icon(Icons.manage_accounts_outlined, color: Colors.white),
-          //   onPressed: _openSettingsPage,
-          // ),
           // Foto di pojok kanan AppBar
           Padding(
             padding: const EdgeInsets.only(right: 22.0),
@@ -271,7 +274,7 @@ class _DashboardState extends State<Dashboard> {
                   ? FileImage(File(_foto))
                   : const AssetImage('assets/default_avatar.jpeg')
                       as ImageProvider<Object>,
-              backgroundColor: Colors.grey[300],
+              backgroundColor: Modelcolor.backgroundDark,
             ),
           ),
         ],
@@ -283,8 +286,8 @@ class _DashboardState extends State<Dashboard> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.deepPurple.shade600,
-                Colors.black87,
+                Modelcolor.primaryDark2,
+                Modelcolor.backgroundDark,
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -298,7 +301,7 @@ class _DashboardState extends State<Dashboard> {
                 margin: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 12.0),
                 decoration: BoxDecoration(
-                  color: Colors.deepPurple.shade700,
+                  color: Modelcolor.accentDark,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
@@ -308,10 +311,10 @@ class _DashboardState extends State<Dashboard> {
                       offset: const Offset(4, 6),
                     ),
                   ],
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [
-                      Colors.deepPurple.shade700,
-                      Colors.deepPurple.shade900,
+                      Color.fromARGB(255, 102, 55, 183),
+                      Modelcolor.accentDark,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -392,6 +395,33 @@ class _DashboardState extends State<Dashboard> {
                 tileColor: Colors.deepPurple.shade600,
               ),
               customListTile(
+                icon: Icons.local_shipping_rounded,
+                title: "Barang Masuk",
+                context: context,
+                destinationPage: const BarangMasukPage(),
+                iconColor: Colors.white,
+                textColor: Colors.white,
+                tileColor: Colors.deepPurple.shade600,
+              ),
+              customListTile(
+                icon: Icons.move_to_inbox_sharp,
+                title: "Barang Keluar",
+                context: context,
+                destinationPage: const BarangKeluarPage(),
+                iconColor: Colors.white,
+                textColor: Colors.white,
+                tileColor: Colors.deepPurple.shade600,
+              ),
+              customListTile(
+                icon: Icons.assignment_rounded,
+                title: "Laporan",
+                context: context,
+                destinationPage: const LaporanPage(),
+                iconColor: Colors.white,
+                textColor: Colors.white,
+                tileColor: Colors.deepPurple.shade600,
+              ),
+              customListTile(
                 icon: Icons.account_circle_outlined,
                 title: "Profile",
                 context: context,
@@ -439,8 +469,8 @@ class _DashboardState extends State<Dashboard> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.deepPurple.shade400,
-                Colors.black87,
+                Modelcolor.primaryDark2,
+                Modelcolor.backgroundDark,
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -463,9 +493,9 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     const SizedBox(height: 20),
 
-                    widgetContainer(
+                    Customcontainer.widgetContainer(
                       context,
-                      horizontalGrid(
+                      Costumgrid.horizontalGrid(
                           context), // Memasukkan verticalGrid sebagai konten
                       title: "Statistik", // Judul yang diinginkan
                       height: 255,
@@ -533,8 +563,8 @@ class _DashboardState extends State<Dashboard> {
                               height: MediaQuery.of(context).size.height * 0.4,
                               child: TabBarView(
                                 children: [
-                                  verticalGrid(context),
-                                  verticalListView(context),
+                                  Costumgrid.verticalGrid(context),
+                                  Costumlistview.verticalListView(context),
                                   produkTabel(context),
                                   pieChart(context),
                                   barChart(context),
@@ -546,16 +576,155 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    widgetContainer(context, verticalGrid(context),
+                    DefaultTabController(
+                      length: 2, // Jumlah tab
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple.shade100,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: TabBar(
+                              indicator: BoxDecoration(
+                                color: Colors.white,
+
+                                borderRadius: BorderRadius.circular(
+                                    5), // Sudut membulat pada indikator
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.deepPurple.withOpacity(0.3),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              labelColor: Colors.deepPurple.shade700,
+                              unselectedLabelColor: Colors.deepPurple.shade300,
+                              labelStyle: const TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.bold),
+                              tabs: const [
+                                Tab(text: "List Grid"),
+                                Tab(text: "List View"),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.6),
+                              border: Border.all(
+                                color: Colors.deepPurple.shade300,
+                                width: 0.2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.deepPurple.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.4,
+                              child: TabBarView(
+                                children: [
+                                  Costumgrid.verticalGrid(context),
+                                  Costumlistview.verticalListView(context),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    DefaultTabController(
+                      length: 3, // Jumlah tab
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple.shade100,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: TabBar(
+                              indicator: BoxDecoration(
+                                color: Colors.white,
+
+                                borderRadius: BorderRadius.circular(
+                                    5), // Sudut membulat pada indikator
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.deepPurple.withOpacity(0.3),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              labelColor: Colors.deepPurple.shade700,
+                              unselectedLabelColor: Colors.deepPurple.shade300,
+                              labelStyle: const TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.bold),
+                              tabs: const [
+                                Tab(text: "Tabel Produk"),
+                                Tab(text: "Pie Chart"),
+                                Tab(text: "Bar Chart"),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.6),
+                              border: Border.all(
+                                color: Colors.deepPurple.shade300,
+                                width: 0.2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.deepPurple.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.4,
+                              child: TabBarView(
+                                children: [
+                                  produkTabel(context),
+                                  pieChart(context),
+                                  barChart(context),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Customcontainer.widgetContainer(
+                        context, Costumgrid.verticalGrid(context),
                         title: "Produk", isCentered: true),
                     const SizedBox(height: 20),
-                    widgetContainer(context, verticalListView(context),
+                    Customcontainer.widgetContainer(
+                        context, Costumlistview.verticalListView(context),
                         title: "Laporan", isCentered: true),
                     const SizedBox(height: 20),
-                    widgetContainer(context, produkTabel(context),
+                    Customcontainer.widgetContainer(
+                        context, produkTabel(context),
                         title: "Stok", isCentered: true),
-                    const SizedBox(height: 20),
-                    horizontalGrid(context),
                     const SizedBox(height: 20),
                     // Informasi Pengguna
                     Container(
@@ -681,80 +850,6 @@ Widget customListTile({
   );
 }
 
-Widget widgetContainer(
-  BuildContext context,
-  Widget child, {
-  String title = "Judul",
-  bool isCentered = false,
-  double? width, // Lebar yang dapat disesuaikan
-  double? height, // Tinggi yang dapat disesuaikan
-}) {
-  return SizedBox(
-    width: width, // Gunakan lebar yang diberikan, jika ada
-    height: height ?? 340, // Gunakan tinggi yang diberikan, atau default 340
-    child: Container(
-      margin:
-          const EdgeInsets.symmetric(horizontal: 5, vertical: 5), // Margin luar
-      padding: const EdgeInsets.all(10), // Padding dalam
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(
-            0.6), // Transparansi lebih banyak untuk container utama
-        borderRadius: BorderRadius.circular(15), // Sudut membulat lebih besar
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Warna bayangan lebih gelap
-            blurRadius: 15, // Tingkat blur bayangan yang lebih besar
-            offset: const Offset(0, 6), // Posisi bayangan lebih terlihat
-          ),
-        ],
-        border: Border.all(
-          color: Colors.deepPurple
-              .withOpacity(0.2), // Border lebih tipis dan transparan
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: isCentered
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start, // Menentukan posisi judul
-        children: [
-          Container(
-            width: double.infinity, // Membuat background judul penuh
-            padding: const EdgeInsets.symmetric(
-                vertical: 8, horizontal: 12), // Padding dalam judul
-            decoration: BoxDecoration(
-              color: Colors.deepPurple.withOpacity(
-                  0.9), // Warna latar belakang judul dengan transparansi
-              borderRadius: BorderRadius.circular(12), // Sudut membulat
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3), // Bayangan judul
-                  blurRadius: 10, // Tingkat blur bayangan
-                  offset: const Offset(0, 4), // Posisi bayangan judul
-                ),
-              ],
-            ),
-            child: Text(
-              title, // Menggunakan parameter title untuk judul
-              textAlign: isCentered
-                  ? TextAlign.center
-                  : TextAlign
-                      .left, // Menentukan apakah teks di tengah atau tidak
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white, // Warna teks judul
-              ),
-            ),
-          ),
-          const SizedBox(height: 10), // Spasi antara judul dan konten
-          Expanded(child: child), // Konten yang bisa diisi dengan widget lain
-        ],
-      ),
-    ),
-  );
-}
-
 Widget produkTabel(BuildContext context) {
   final List<Map<String, dynamic>> productData = [
     {
@@ -877,266 +972,6 @@ Widget produkTabel(BuildContext context) {
         ),
       ),
     ),
-  );
-}
-
-// Fungsi untuk membuat Card statistik
-Widget listViewStat(String title, String count, IconData icon, double d) {
-  return Container(
-    width: 100,
-    padding: const EdgeInsets.all(15.0),
-    decoration: BoxDecoration(
-      color: Colors.deepPurple.shade500,
-      borderRadius: BorderRadius.circular(10),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.2),
-          spreadRadius: 2,
-          blurRadius: 6,
-          offset: const Offset(2, 4),
-        ),
-      ],
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, size: 40, color: const Color.fromARGB(255, 255, 255, 255)),
-        const SizedBox(height: 10),
-        Text(
-          title,
-          style: const TextStyle(
-              fontSize: 16, color: Color.fromARGB(255, 255, 255, 255)),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 5),
-        Text(
-          count,
-          style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 41, 237, 6)),
-        ),
-      ],
-    ),
-  );
-}
-
-// Fungsi untuk membuat Card statistik
-Widget gridStat(String title, String count, IconData icon) {
-  return Container(
-    padding: const EdgeInsets.all(15.0),
-    decoration: BoxDecoration(
-      color: Colors.deepPurple.shade500,
-      borderRadius: BorderRadius.circular(10),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.2),
-          spreadRadius: 2,
-          blurRadius: 6,
-          offset: const Offset(2, 4),
-        ),
-      ],
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, size: 40, color: const Color.fromARGB(255, 255, 255, 255)),
-        const SizedBox(height: 10),
-        Text(
-          title,
-          style: const TextStyle(
-              fontSize: 16, color: Color.fromARGB(255, 255, 255, 255)),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 5),
-        Text(
-          count,
-          style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 41, 237, 6)),
-        ),
-      ],
-    ),
-  );
-}
-
-// Widget untuk GridView Horizontal dalam SizedBox
-Widget horizontalGrid(BuildContext context) {
-  List<Map<String, dynamic>> statData = [
-    {
-      "title": "Total Barang",
-      "count": "150",
-      "icon": Icons.inventory_2_outlined
-    },
-    {
-      "title": "Barang Masuk",
-      "count": "50",
-      "icon": Icons.add_shopping_cart_outlined
-    },
-    {
-      "title": "Barang Keluar",
-      "count": "30",
-      "icon": Icons.remove_shopping_cart_outlined
-    },
-    {"title": "Jumlah Produk", "count": "80", "icon": Icons.widgets_outlined},
-    {
-      "title": "Jumlah Kategori",
-      "count": "20",
-      "icon": Icons.category_outlined
-    },
-  ];
-
-  return SizedBox(
-    height: MediaQuery.of(context).size.height * 0.2,
-    child: SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(statData.length, (index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.3,
-              child: gridStat(
-                statData[index]["title"],
-                statData[index]["count"],
-                statData[index]["icon"],
-              ),
-            ),
-          );
-        }),
-      ),
-    ),
-  );
-}
-
-Widget verticalGrid(BuildContext context) {
-  final items = List.generate(10, (index) => "Item ${index + 1}");
-
-  return Padding(
-    padding: const EdgeInsets.all(10),
-    child: GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // Dua kolom dalam grid
-        crossAxisSpacing: 13,
-        mainAxisSpacing: 13,
-        childAspectRatio: 3 / 2, // Rasio lebar:tinggi
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.deepPurple.shade50,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.deepPurple.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              items[index],
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
-      },
-    ),
-  );
-}
-
-// Widget untuk GridView Horizontal dalam SizedBox
-Widget horizontalListView(BuildContext context) {
-  return SizedBox(
-    height: MediaQuery.of(context).size.height * 0.2,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: 5,
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      itemBuilder: (context, index) {
-        List<Map<String, dynamic>> statData = [
-          {
-            "title": "Total Barang",
-            "count": "150",
-            "icon": Icons.inventory_2_outlined
-          },
-          {
-            "title": "Barang Masuk",
-            "count": "50",
-            "icon": Icons.add_shopping_cart_outlined
-          },
-          {
-            "title": "Barang Keluar",
-            "count": "30",
-            "icon": Icons.remove_shopping_cart_outlined
-          },
-          {
-            "title": "Jumlah Produk",
-            "count": "80",
-            "icon": Icons.widgets_outlined
-          },
-          {
-            "title": "Jumlah Kategori",
-            "count": "20",
-            "icon": Icons.category_outlined
-          },
-        ];
-        return Padding(
-          padding: const EdgeInsets.only(right: 12.0),
-          child: listViewStat(
-            statData[index]["title"],
-            statData[index]["count"],
-            statData[index]["icon"],
-            MediaQuery.of(context).size.width * 0.21,
-          ),
-        );
-      },
-    ),
-  );
-}
-
-Widget verticalListView(BuildContext context) {
-  final items = List.generate(10, (index) => "Item ${index + 1}");
-
-  return ListView.separated(
-    padding: const EdgeInsets.all(16),
-    itemCount: items.length,
-    separatorBuilder: (context, index) => const SizedBox(height: 10),
-    itemBuilder: (context, index) {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.deepPurple.shade50,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.deepPurple.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              items[index],
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const Icon(Icons.arrow_forward, color: Colors.deepPurple),
-          ],
-        ),
-      );
-    },
   );
 }
 
