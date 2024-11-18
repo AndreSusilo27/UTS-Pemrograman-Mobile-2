@@ -247,8 +247,6 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
   Widget _buildInputField({
     required String label,
     String? hint,
-    IconData? suffixIcon,
-    VoidCallback? onSuffixTap,
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
     TextEditingController? controller,

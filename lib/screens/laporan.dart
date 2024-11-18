@@ -26,29 +26,18 @@ class _LaporanPageState extends State<LaporanPage>
     _searchController.addListener(_filterData);
 
     _tabController.addListener(() {
-      // Update `filteredBarang` when tab changes
-      if (_tabController.index == 0) {
-        setState(() {
-          filteredBarang = barangMasuk;
-        });
-      } else {
-        setState(() {
-          filteredBarang = barangKeluar;
-        });
-      }
+      // Update filteredBarang based on tab selection
+      _updateFilteredBarang();
     });
   }
 
-  // Pastikan data yang diterima bisa dimodifikasi
-  Future<void> _fetchData() async {
+  void _fetchData() async {
     try {
       var resultBarangMasuk = await DatabaseHelper().getBarangMasuk();
       var resultBarangKeluar = await DatabaseHelper().getBarangKeluar();
       setState(() {
-        barangMasuk = List<Map<String, dynamic>>.from(
-            resultBarangMasuk); // Membuat salinan dari data
-        barangKeluar = List<Map<String, dynamic>>.from(
-            resultBarangKeluar); // Membuat salinan dari data
+        barangMasuk = List<Map<String, dynamic>>.from(resultBarangMasuk);
+        barangKeluar = List<Map<String, dynamic>>.from(resultBarangKeluar);
         filteredBarang = List<Map<String, dynamic>>.from(barangMasuk);
       });
     } catch (e) {
@@ -64,20 +53,39 @@ class _LaporanPageState extends State<LaporanPage>
       if (_tabController.index == 0) {
         filteredBarang = barangMasuk
             .where((item) =>
-                item['kodeBarang']?.toLowerCase().contains(query) ??
-                false || item['namaBarang']?.toLowerCase().contains(query) ??
-                false)
+                (item['kodeBarang']?.toLowerCase().contains(query) ?? false) ||
+                (item['namaBarang']?.toLowerCase().contains(query) ?? false) ||
+                (item['jumlahMasuk']
+                        ?.toString()
+                        .toLowerCase()
+                        .contains(query) ??
+                    false))
             .toList();
       } else {
         filteredBarang = barangKeluar
             .where((item) =>
-                item['kodeBarang']?.toLowerCase().contains(query) ??
-                false || item['namaBarang']?.toLowerCase().contains(query) ??
-                false)
+                (item['kodeBarang']?.toLowerCase().contains(query) ?? false) ||
+                (item['namaBarang']?.toLowerCase().contains(query) ?? false) ||
+                (item['jumlahKeluar']
+                        ?.toString()
+                        .toLowerCase()
+                        .contains(query) ??
+                    false))
             .toList();
       }
     });
     _applyFilter();
+  }
+
+  void _updateFilteredBarang() {
+    setState(() {
+      if (_tabController.index == 0) {
+        filteredBarang = List<Map<String, dynamic>>.from(barangMasuk);
+      } else {
+        filteredBarang = List<Map<String, dynamic>>.from(barangKeluar);
+      }
+      _applyFilter();
+    });
   }
 
   void _applyFilter() {
@@ -91,8 +99,15 @@ class _LaporanPageState extends State<LaporanPage>
             (a, b) => (b['namaBarang'] ?? '').compareTo(a['namaBarang'] ?? ''));
         break;
       case 'Tanggal':
-        filteredBarang.sort((a, b) =>
-            (a['tanggalMasuk'] ?? '').compareTo(b['tanggalMasuk'] ?? ''));
+        filteredBarang.sort((a, b) {
+          DateTime? dateA = _tabController.index == 0
+              ? DateTime.tryParse(a['tanggalMasuk'] ?? '')
+              : DateTime.tryParse(a['tanggalKeluar'] ?? '');
+          DateTime? dateB = _tabController.index == 0
+              ? DateTime.tryParse(b['tanggalMasuk'] ?? '')
+              : DateTime.tryParse(b['tanggalKeluar'] ?? '');
+          return (dateA ?? DateTime(0)).compareTo(dateB ?? DateTime(0));
+        });
         break;
     }
   }
@@ -101,10 +116,22 @@ class _LaporanPageState extends State<LaporanPage>
     if (filteredBarang.isEmpty) {
       return const Center(child: Text('Tidak ada data yang ditemukan.'));
     }
+
     return ListView.builder(
       itemCount: filteredBarang.length,
       itemBuilder: (context, index) {
         final item = filteredBarang[index];
+        final fotoBarang = item['fotoBarang'];
+        final String kodeBarang = item['kodeBarang'] ?? 'Tidak diketahui';
+        final String namaBarang = item['namaBarang'] ?? 'Tidak diketahui';
+        final String tanggal = _tabController.index == 0
+            ? item['tanggalMasuk'] ?? '-'
+            : item['tanggalKeluar'] ?? '-';
+        final String keterangan = item['keterangan'] ?? '-';
+        final String jumlah = _tabController.index == 0
+            ? item['jumlahMasuk']?.toString() ?? '-'
+            : item['jumlahKeluar']?.toString() ?? '-';
+
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 5),
           padding: const EdgeInsets.all(10),
@@ -120,22 +147,66 @@ class _LaporanPageState extends State<LaporanPage>
               ),
             ],
           ),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Kode Barang: ${item['kodeBarang'] ?? '-'}',
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, color: Modelcolor.primary),
+              Expanded(
+                flex: 1,
+                child: fotoBarang != null
+                    ? Image.asset(
+                        'assets/$fotoBarang',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
+                    : const Icon(
+                        Icons.image_not_supported,
+                        size: 80,
+                        color: Colors.grey,
+                      ),
               ),
-              Text('Nama Barang: ${item['namaBarang'] ?? '-'}'),
-              Text(
-                'Jumlah: ${_tabController.index == 0 ? item['jumlahMasuk'] ?? '-' : item['jumlahKeluar'] ?? '-'}',
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Kode Barang: $kodeBarang',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Modelcolor.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text('Nama Barang: $namaBarang'),
+                      const SizedBox(height: 5),
+                      Text('Tanggal: $tanggal'),
+                      const SizedBox(height: 5),
+                      Text('Keterangan: $keterangan'),
+                    ],
+                  ),
+                ),
               ),
-              Text(
-                'Tanggal: ${_tabController.index == 0 ? item['tanggalMasuk'] ?? '-' : item['tanggalKeluar'] ?? '-'}',
+              Expanded(
+                flex: 1,
+                child: SizedBox(
+                  height: 80,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      jumlah,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Modelcolor.primary,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              Text('Keterangan: ${item['keterangan'] ?? '-'}'),
             ],
           ),
         );
@@ -162,9 +233,9 @@ class _LaporanPageState extends State<LaporanPage>
             Tab(text: 'Barang Masuk'),
             Tab(text: 'Barang Keluar'),
           ],
-          indicatorColor: Colors.white, // Warna indikator TabBar
-          labelColor: Colors.white, // Warna label tab yang aktif
-          unselectedLabelColor: Colors.grey, // Warna label tab yang tidak aktif
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.grey,
         ),
       ),
       body: Container(
@@ -173,8 +244,8 @@ class _LaporanPageState extends State<LaporanPage>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Modelcolor.primaryDark2, // Warna pertama gradasi
-              Modelcolor.backgroundDark, // Warna kedua gradasi
+              Modelcolor.primaryDark2,
+              Modelcolor.backgroundDark,
             ],
           ),
         ),
@@ -182,112 +253,96 @@ class _LaporanPageState extends State<LaporanPage>
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: Modelcolor.cardBackground,
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.search, color: Modelcolor.primary),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          hintText: 'Cari barang...',
-                          border: InputBorder.none,
+              child: Row(
+                children: [
+                  // Search Field
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Modelcolor.cardBackground,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.search, color: Modelcolor.primary),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: const InputDecoration(
+                                hintText: 'Cari...',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  // Filter Dropdown
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Modelcolor.cardBackground,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: selectedFilter,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedFilter = newValue!;
+                            _applyFilter();
+                          });
+                        },
+                        items: <String>['A-Z', 'Z-A', 'Tanggal']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Icon(
+                              value == 'A-Z'
+                                  ? Icons.sort_by_alpha
+                                  : value == 'Z-A'
+                                      ? Icons.sort_by_alpha_outlined
+                                      : Icons.date_range,
+                              color: Modelcolor.primary,
+                              size: 21,
+                            ),
+                          );
+                        }).toList(),
+                        isExpanded: false,
+                        icon: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          size: 24,
+                        ),
+                        dropdownColor: Modelcolor.cardBackground,
+                        borderRadius: BorderRadius.circular(20),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.filter_list,
-                          color: Modelcolor.primary),
-                      onPressed: () {
-                        _showFilterDialog();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: _buildDataList(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: _buildDataList(),
                   ),
                 ],
               ),
             ),
+            const Divider(color: Colors.white),
+            Expanded(child: _buildDataList()),
           ],
         ),
       ),
-    );
-  }
-
-  Future<void> _showFilterDialog() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Pilih Filter'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('A-Z'),
-                leading: Radio<String>(
-                  value: 'A-Z',
-                  groupValue: selectedFilter,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedFilter = value!;
-                      _applyFilter();
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text('Z-A'),
-                leading: Radio<String>(
-                  value: 'Z-A',
-                  groupValue: selectedFilter,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedFilter = value!;
-                      _applyFilter();
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text('Tanggal'),
-                leading: Radio<String>(
-                  value: 'Tanggal',
-                  groupValue: selectedFilter,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedFilter = value!;
-                      _applyFilter();
-                    });
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

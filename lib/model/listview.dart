@@ -116,6 +116,28 @@ class Costumlistview {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const Icon(Icons.photo_camera_back_outlined,
+                  color: Colors.deepPurple),
+              Text(
+                items[index],
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                items[index],
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                items[index],
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                items[index],
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               Text(
                 items[index],
                 style:

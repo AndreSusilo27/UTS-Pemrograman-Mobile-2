@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pemmob2/db/db.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:pemmob2/model/notifications_widget.dart';
 import 'package:pemmob2/screens/barangkeluar.dart';
 import 'package:pemmob2/screens/barangmasuk.dart';
+import 'package:pemmob2/screens/jadwalrestok.dart';
 import 'package:pemmob2/screens/laporan.dart';
 import 'package:pemmob2/screens/login.dart';
 import 'package:pemmob2/screens/profile.dart';
@@ -19,7 +21,7 @@ import 'package:pemmob2/model/modelcolor.dart';
 
 import 'dart:math' as math;
 import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
 import 'package:fl_chart/fl_chart.dart';
 
 class Dashboard extends StatefulWidget {
@@ -47,8 +49,6 @@ class _DashboardState extends State<Dashboard> {
   String _foto = 'assets/default_avatar.jpeg'; // Set foto default
   int? _userId;
 
-  int _selectedIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -70,49 +70,6 @@ class _DashboardState extends State<Dashboard> {
     } else {
       debugPrint('Pengguna tidak ditemukan');
     }
-  }
-
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    // Pindah halaman berdasarkan indeks yang dipilih
-    switch (_selectedIndex) {
-      case 0:
-        // Tidak perlu memuat ulang halaman Dashboard jika sudah di Dashboard
-        if (_selectedIndex != 0) {
-          _navigateToPage(
-              context,
-              Dashboard(
-                username: widget.username,
-                name: widget.name,
-                email: widget.email,
-                foto: widget.foto,
-              ));
-        }
-        break;
-      case 1:
-        // Navigasi ke halaman Profile dengan mengambil userId
-        _openProfilePage(context);
-        break;
-      case 2:
-        // Navigasi ke halaman Tentang
-        _navigateToPage(context, const Tentang());
-        break;
-      case 3:
-        // Navigasi ke halaman Ubah Profile dengan mengambil userId
-        _openSettingsPage();
-        break;
-    }
-  }
-
-// Method untuk melakukan routing ke halaman tertentu
-  void _navigateToPage(BuildContext context, Widget page) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => page),
-    );
   }
 
   Future<void> _refresh() async {
@@ -238,6 +195,38 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  // Contoh data jadwal
+  List<Map<String, dynamic>> schedules = [
+    {
+      'item': 'Beras',
+      'quantity': '50 kg',
+      'date': DateTime.now().toIso8601String(),
+      'completed': false
+    },
+    {
+      'item': 'Minyak',
+      'quantity': '20 liter',
+      'date': DateTime.now().toIso8601String(),
+      'completed': false
+    },
+    {
+      'item': 'Gula',
+      'quantity': '10 kg',
+      'date': '2024-11-20T00:00:00',
+      'completed': false
+    },
+  ];
+
+  // Fungsi untuk menandai restock selesai
+  void completeSchedule(Map<String, dynamic> schedule) {
+    setState(() {
+      final index = schedules.indexOf(schedule);
+      if (index != -1) {
+        schedules[index]['completed'] = true;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -265,6 +254,12 @@ class _DashboardState extends State<Dashboard> {
         ),
         backgroundColor: Modelcolor.primaryDark,
         actions: [
+          notificationsIcon(
+            context: context,
+            schedules: schedules,
+            onComplete: completeSchedule,
+          ),
+          const SizedBox(width: 10),
           // Foto di pojok kanan AppBar
           Padding(
             padding: const EdgeInsets.only(right: 22.0),
@@ -386,6 +381,15 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               customListTile(
+                icon: Icons.calendar_month_outlined,
+                title: "Jadwal Restok",
+                context: context,
+                destinationPage: const JadwalRestokPage(),
+                iconColor: Colors.white,
+                textColor: Colors.white,
+                tileColor: Colors.deepPurple.shade600,
+              ),
+              customListTile(
                 icon: Icons.assignment_add,
                 title: "Tambah Barang",
                 context: context,
@@ -486,24 +490,74 @@ class _DashboardState extends State<Dashboard> {
                     const Text(
                       "Dashboard",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
 
+                    // Inventory Summary Section
+                    Container(
+                      padding: const EdgeInsets.all(15.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepPurple.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Inventory Summary",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildSummaryCard(
+                                  "Total Products", "500", Icons.inventory),
+                              _buildSummaryCard(
+                                  "Total Sales", "1500", Icons.attach_money),
+                              _buildSummaryCard(
+                                  "Low Stock", "25", Icons.warning),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Statistik Section
                     Customcontainer.widgetContainer(
                       context,
-                      Costumgrid.horizontalGrid(
-                          context), // Memasukkan verticalGrid sebagai konten
-                      title: "Statistik", // Judul yang diinginkan
+                      Costumgrid.horizontalGrid(context),
+                      title: "Statistik",
                       height: 255,
-                      isCentered: true, // Tinggi yang disesuaikan
+                      isCentered: true,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
+
+                    // Tab Section
                     DefaultTabController(
-                      length: 5, // Jumlah tab
+                      length: 2,
                       child: Column(
                         children: [
                           Container(
@@ -511,88 +565,19 @@ class _DashboardState extends State<Dashboard> {
                                 horizontal: 5, vertical: 5),
                             decoration: BoxDecoration(
                               color: Colors.deepPurple.shade100,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: TabBar(
-                              indicator: BoxDecoration(
-                                color: Colors.white,
-
-                                borderRadius: BorderRadius.circular(
-                                    5), // Sudut membulat pada indikator
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.deepPurple.withOpacity(0.3),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 5),
-                                  ),
-                                ],
-                              ),
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              labelColor: Colors.deepPurple.shade700,
-                              unselectedLabelColor: Colors.deepPurple.shade300,
-                              labelStyle: const TextStyle(
-                                  fontSize: 10, fontWeight: FontWeight.bold),
-                              tabs: const [
-                                Tab(text: "List Grid"),
-                                Tab(text: "List View"),
-                                Tab(text: "Tabel Produk"),
-                                Tab(text: "Pie Chart"),
-                                Tab(text: "Bar Chart"),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
-                              border: Border.all(
-                                color: Colors.deepPurple.shade300,
-                                width: 0.2,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(15),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.deepPurple.withOpacity(0.2),
-                                  blurRadius: 8,
+                                  blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.4,
-                              child: TabBarView(
-                                children: [
-                                  Costumgrid.verticalGrid(context),
-                                  Costumlistview.verticalListView(context),
-                                  produkTabel(context),
-                                  pieChart(context),
-                                  barChart(context),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    DefaultTabController(
-                      length: 2, // Jumlah tab
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.shade100,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
                             child: TabBar(
                               indicator: BoxDecoration(
                                 color: Colors.white,
-
-                                borderRadius: BorderRadius.circular(
-                                    5), // Sudut membulat pada indikator
+                                borderRadius: BorderRadius.circular(15),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.deepPurple.withOpacity(0.3),
@@ -605,7 +590,7 @@ class _DashboardState extends State<Dashboard> {
                               labelColor: Colors.deepPurple.shade700,
                               unselectedLabelColor: Colors.deepPurple.shade300,
                               labelStyle: const TextStyle(
-                                  fontSize: 10, fontWeight: FontWeight.bold),
+                                  fontSize: 12, fontWeight: FontWeight.bold),
                               tabs: const [
                                 Tab(text: "List Grid"),
                                 Tab(text: "List View"),
@@ -616,16 +601,16 @@ class _DashboardState extends State<Dashboard> {
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
+                              color: Colors.white.withOpacity(0.8),
                               border: Border.all(
                                 color: Colors.deepPurple.shade300,
-                                width: 0.2,
+                                width: 0.3,
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.deepPurple.withOpacity(0.2),
-                                  blurRadius: 8,
+                                  blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
@@ -643,146 +628,25 @@ class _DashboardState extends State<Dashboard> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    DefaultTabController(
-                      length: 3, // Jumlah tab
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.shade100,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: TabBar(
-                              indicator: BoxDecoration(
-                                color: Colors.white,
+                    const SizedBox(height: 30),
 
-                                borderRadius: BorderRadius.circular(
-                                    5), // Sudut membulat pada indikator
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.deepPurple.withOpacity(0.3),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 5),
-                                  ),
-                                ],
-                              ),
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              labelColor: Colors.deepPurple.shade700,
-                              unselectedLabelColor: Colors.deepPurple.shade300,
-                              labelStyle: const TextStyle(
-                                  fontSize: 10, fontWeight: FontWeight.bold),
-                              tabs: const [
-                                Tab(text: "Tabel Produk"),
-                                Tab(text: "Pie Chart"),
-                                Tab(text: "Bar Chart"),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
-                              border: Border.all(
-                                color: Colors.deepPurple.shade300,
-                                width: 0.2,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.deepPurple.withOpacity(0.2),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.4,
-                              child: TabBarView(
-                                children: [
-                                  produkTabel(context),
-                                  pieChart(context),
-                                  barChart(context),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                    // Produk Section
                     Customcontainer.widgetContainer(
                         context, Costumgrid.verticalGrid(context),
                         title: "Produk", isCentered: true),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
+
+                    // Laporan Section
                     Customcontainer.widgetContainer(
                         context, Costumlistview.verticalListView(context),
                         title: "Laporan", isCentered: true),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
+
+                    // Stok Section
                     Customcontainer.widgetContainer(
                         context, produkTabel(context),
                         title: "Stok", isCentered: true),
-                    const SizedBox(height: 20),
-                    // Informasi Pengguna
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.deepPurple.shade700,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 3,
-                            blurRadius: 6,
-                            offset: const Offset(2, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            _nama.isNotEmpty
-                                ? "Nama: $_nama"
-                                : "Nama: Tidak Ditemukan",
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.white),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            _email.isNotEmpty
-                                ? "Email: $_email"
-                                : "Email: Tidak Ditemukan",
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.white),
-                          ),
-                          const SizedBox(height: 20),
-                          TextButton.icon(
-                            onPressed: _showUserTableDialog,
-                            icon: const Icon(Icons.table_chart,
-                                color: Colors.white),
-                            label: const Text(
-                              "Tampilkan Tabel Pengguna",
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.deepPurple.shade500,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                   ],
                 ),
               ),
@@ -790,34 +654,49 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-      bottomNavigationBar: SalomonBottomBar(
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        items: [
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.home),
-            title: const Text("Dashboard"),
-            selectedColor: Colors.deepPurple,
-          ),
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.account_circle),
-            title: const Text("Profile"),
-            selectedColor: Colors.teal,
-          ),
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.info_outline),
-            title: const Text("Tentang"),
-            selectedColor: Colors.orange,
-          ),
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.settings),
-            title: const Text("Ubah Profile"),
-            selectedColor: Colors.blue,
-          ),
-        ],
-      ),
     );
   }
+}
+
+// Custom Widget for Summary Cards
+Widget _buildSummaryCard(String title, String value, IconData icon) {
+  return Container(
+    width: 100,
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: Colors.deepPurple.shade200,
+      borderRadius: BorderRadius.circular(10),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.deepPurple.withOpacity(0.2),
+          blurRadius: 6,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 30, color: Colors.white),
+        const SizedBox(height: 5),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.white70,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 Widget customListTile({
