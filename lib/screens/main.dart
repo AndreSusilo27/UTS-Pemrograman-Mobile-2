@@ -1,13 +1,19 @@
+//Andre Susilo
+//21552011246
+//Pemrograman Mobile 2
+//Aplikasi Sikoin Untuk Inventaris
+//TIFRM22CID
+
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/screens/login.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Sikoin());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Sikoin extends StatelessWidget {
+  const Sikoin({super.key});
 
   @override
   Widget build(BuildContext context) {
