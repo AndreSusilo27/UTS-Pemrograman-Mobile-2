@@ -10,14 +10,10 @@ class Tentang extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.deepPurple.shade400,
-                  Colors.black87,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/bghome2.jpg'),
+                fit: BoxFit.cover,
               ),
             ),
           ),

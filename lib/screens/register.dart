@@ -226,16 +226,10 @@ class RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.deepPurple.shade700,
-              Colors.black,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/bghome2.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: Center(

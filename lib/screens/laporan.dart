@@ -98,7 +98,7 @@ class _LaporanPageState extends State<LaporanPage>
         filteredBarang.sort(
             (a, b) => (b['namaBarang'] ?? '').compareTo(a['namaBarang'] ?? ''));
         break;
-      case 'Tanggal':
+      case 'Terbaru':
         filteredBarang.sort((a, b) {
           DateTime? dateA = _tabController.index == 0
               ? DateTime.tryParse(a['tanggalMasuk'] ?? '')
@@ -106,7 +106,20 @@ class _LaporanPageState extends State<LaporanPage>
           DateTime? dateB = _tabController.index == 0
               ? DateTime.tryParse(b['tanggalMasuk'] ?? '')
               : DateTime.tryParse(b['tanggalKeluar'] ?? '');
-          return (dateA ?? DateTime(0)).compareTo(dateB ?? DateTime(0));
+          return (dateB ?? DateTime(0))
+              .compareTo(dateA ?? DateTime(0)); // Descending
+        });
+        break;
+      case 'Terlama':
+        filteredBarang.sort((a, b) {
+          DateTime? dateA = _tabController.index == 0
+              ? DateTime.tryParse(a['tanggalMasuk'] ?? '')
+              : DateTime.tryParse(a['tanggalKeluar'] ?? '');
+          DateTime? dateB = _tabController.index == 0
+              ? DateTime.tryParse(b['tanggalMasuk'] ?? '')
+              : DateTime.tryParse(b['tanggalKeluar'] ?? '');
+          return (dateA ?? DateTime(0))
+              .compareTo(dateB ?? DateTime(0)); // Ascending
         });
         break;
     }
@@ -121,7 +134,7 @@ class _LaporanPageState extends State<LaporanPage>
       itemCount: filteredBarang.length,
       itemBuilder: (context, index) {
         final item = filteredBarang[index];
-        final fotoBarang = item['fotoBarang'];
+        final fotoBarang = item['foto'];
         final String kodeBarang = item['kodeBarang'] ?? 'Tidak diketahui';
         final String namaBarang = item['namaBarang'] ?? 'Tidak diketahui';
         final String tanggal = _tabController.index == 0
@@ -137,11 +150,11 @@ class _LaporanPageState extends State<LaporanPage>
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Modelcolor.cardBackground.withOpacity(0.88),
+            color: Modelcolor.cardBackground.withOpacity(0.8),
             border: Border.all(color: Modelcolor.primary),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.4),
                 blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
@@ -151,41 +164,81 @@ class _LaporanPageState extends State<LaporanPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
-                child: fotoBarang != null
-                    ? Image.asset(
-                        'assets/$fotoBarang',
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                    : const Icon(
-                        Icons.image_not_supported,
-                        size: 80,
-                        color: Colors.grey,
+                flex: 2,
+                child: Container(
+                  width: 100, // Lebar container (menyesuaikan ukuran gambar)
+                  height: 100, // Tinggi container (menyesuaikan ukuran gambar)
+                  decoration: BoxDecoration(
+                    color: Colors.white, // Warna latar belakang
+                    borderRadius: BorderRadius.circular(
+                        12), // Radius untuk border melengkung
+                    border: Border.all(
+                      color: Modelcolor.primary2, // Warna border
+                      width: 2, // Ketebalan border
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1), // Warna bayangan
+                        blurRadius: 10, // Jarak buram bayangan
+                        offset: const Offset(0, 5), // Posisi bayangan
                       ),
+                    ],
+                  ),
+                  child: fotoBarang != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              10), // Border melengkung pada gambar
+                          child: Image.asset(
+                            '$fotoBarang',
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.image_not_supported,
+                          size: 80,
+                          color: Color.fromARGB(255, 133, 132, 132),
+                        ),
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 flex: 4,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 3),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Kode Barang: $kodeBarang',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Modelcolor.primary,
+                          color: Modelcolor.primaryDark2,
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Text('Nama Barang: $namaBarang'),
+                      Text(
+                        namaBarang,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ),
                       const SizedBox(height: 5),
-                      Text('Tanggal: $tanggal'),
+                      Text(
+                        'Tanggal: $tanggal',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ),
                       const SizedBox(height: 5),
-                      Text('Keterangan: $keterangan'),
+                      Text(
+                        'Keterangan: $keterangan',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -218,8 +271,8 @@ class _LaporanPageState extends State<LaporanPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('Laporan Barang', style: TextStyle(color: Colors.white)),
+        title: const Text('Laporan Barang',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -239,14 +292,10 @@ class _LaporanPageState extends State<LaporanPage>
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Modelcolor.primaryDark2,
-              Modelcolor.backgroundDark,
-            ],
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/bghome2.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: Column(
@@ -305,31 +354,30 @@ class _LaporanPageState extends State<LaporanPage>
                             _applyFilter();
                           });
                         },
-                        items: <String>['A-Z', 'Z-A', 'Tanggal']
+                        items: <String>['A-Z', 'Z-A', 'Terbaru', 'Terlama']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Icon(
-                              value == 'A-Z'
-                                  ? Icons.sort_by_alpha
-                                  : value == 'Z-A'
-                                      ? Icons.sort_by_alpha_outlined
-                                      : Icons.date_range,
-                              color: Modelcolor.primary,
-                              size: 21,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
                             ),
                           );
                         }).toList(),
                         isExpanded: false,
                         icon: const Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: Color.fromARGB(255, 0, 0, 0),
+                          color: Colors.black,
                           size: 24,
                         ),
                         dropdownColor: Modelcolor.cardBackground,
                         borderRadius: BorderRadius.circular(20),
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -339,7 +387,13 @@ class _LaporanPageState extends State<LaporanPage>
               ),
             ),
             const Divider(color: Colors.white),
-            Expanded(child: _buildDataList()),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 15.0), // Padding untuk jarak
+                child: _buildDataList(),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,7 +1,3 @@
-// Andre Susilo
-// 21552011246
-// Teknik Informatika
-// UTS Pemrograman Mobile 2
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/screens/login.dart';
@@ -19,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Sikoin',
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.deepPurple,
       ),
       home: const HomePage(),
     );
@@ -55,40 +51,74 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: DefaultTabController(
-        length: 2,
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/bghome2.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepPurple.shade700, Colors.black],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              colors: [
+                Colors.black.withOpacity(0.7),
+                Colors.deepPurple.shade900.withOpacity(0.9),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // App Logo with Image
+              Container(
+                width: 280,
+                height: 280,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/home.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+
+              // App Name
               ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Colors.blueAccent, Colors.cyan],
+                  colors: [Colors.amber, Colors.deepOrange],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ).createShader(bounds),
                 child: const Text(
-                  'Andre APP',
+                  'Sikoin',
                   style: TextStyle(
-                    fontSize: 36.0,
+                    fontSize: 42.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
+
+              // Welcome Text
               const Text(
-                'Selamat Datang di Aplikasi Andre APP',
+                'Selamat Datang di Aplikasi Sikoin',
                 style: TextStyle(
                   fontSize: 22.0,
                   color: Colors.white,
@@ -97,27 +127,31 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
+
+              // Animated Text
               AnimatedTextKit(
                 animatedTexts: [
-                  _buildTypewriterText('Aplikasi Pemrograman Mobile 2'),
-                  _buildTypewriterText('Aplikasi Android Dengan Flutter'),
-                  _buildTypewriterText('Menggunakan Bahasa Dart'),
+                  _buildTypewriterText('Aplikasi Inventaris Modern'),
+                  _buildTypewriterText('Kelola Bisnis Anda dengan Mudah'),
+                  _buildTypewriterText('Sikoin: Solusi Bisnis Anda'),
                 ],
                 repeatForever: true,
                 pause: const Duration(seconds: 2),
                 displayFullTextOnTap: true,
               ),
               const SizedBox(height: 40),
+
+              // Login Button
               ElevatedButton(
                 onPressed: _isLoading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent.shade700,
+                  backgroundColor: Colors.amber,
                   minimumSize: const Size(200, 60),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  elevation: 8,
-                  shadowColor: Colors.black45,
+                  elevation: 10,
+                  shadowColor: Colors.black38,
                 ),
                 child: _isLoading
                     ? const SizedBox(
@@ -129,14 +163,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                       )
                     : const Text(
-                        'Login',
+                        'Masuk',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -153,6 +187,6 @@ TypewriterAnimatedText _buildTypewriterText(String text) {
       color: Colors.white,
       fontWeight: FontWeight.w500,
     ),
-    speed: const Duration(milliseconds: 120),
+    speed: const Duration(milliseconds: 100),
   );
 }

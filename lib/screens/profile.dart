@@ -65,14 +65,10 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Modelcolor.primaryDark,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Modelcolor.primaryDark2,
-              Modelcolor.backgroundDark,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/bghome2.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         padding: const EdgeInsets.all(20.0),

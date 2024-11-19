@@ -32,7 +32,7 @@ class _BarangKeluarPageState extends State<BarangKeluarPage> {
         backgroundColor: Modelcolor.primaryDark,
         title: const Text(
           'Barang Keluar',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -42,19 +42,15 @@ class _BarangKeluarPageState extends State<BarangKeluarPage> {
         ),
       ),
       body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Modelcolor.primaryDark2,
-              Modelcolor.backgroundDark,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/bghome2.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
-        child: Center(
+        child: Align(
+          alignment: Alignment
+              .topCenter, // Memastikan elemen berada di bagian atas tengah
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(10.0),
             child: Container(

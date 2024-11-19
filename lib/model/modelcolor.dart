@@ -8,6 +8,7 @@ class Modelcolor {
   static const Color primaryDark = Color.fromARGB(255, 63, 34, 133);
   static Color primaryDark2 = Colors.deepPurpleAccent;
   static Color primaryblack = Colors.black87;
+  static Color primary2 = const Color.fromARGB(255, 89, 51, 156);
 
   // ===== Warna Aksen =====
   static const Color accent = Color(0xFF7C4DFF); // Bright Purple

@@ -198,21 +198,21 @@ class _DashboardState extends State<Dashboard> {
   // Contoh data jadwal
   List<Map<String, dynamic>> schedules = [
     {
-      'item': 'Beras',
-      'quantity': '50 kg',
+      'item': 'Keyboard Mechanical',
+      'quantity': '20 pcs',
       'date': DateTime.now().toIso8601String(),
       'completed': false
     },
     {
-      'item': 'Minyak',
-      'quantity': '20 liter',
+      'item': 'Keyboard Mechanical RGB',
+      'quantity': '15 pcs',
       'date': DateTime.now().toIso8601String(),
       'completed': false
     },
     {
-      'item': 'Gula',
-      'quantity': '10 kg',
-      'date': '2024-11-20T00:00:00',
+      'item': 'Mouse Wireless',
+      'quantity': '18 pcs',
+      'date': DateTime.now().toIso8601String(),
       'completed': false
     },
   ];
@@ -243,10 +243,10 @@ class _DashboardState extends State<Dashboard> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           colors: [
-            Color.fromARGB(255, 233, 177, 7), // 1
+            Color.fromARGB(255, 216, 164, 8), // 1
             Color.fromARGB(255, 255, 196, 19), // 2
             Colors.amber, // 3
-            Colors.white,
+            Colors.deepOrange,
           ],
           duration: Duration(seconds: 7),
           transform:
@@ -278,14 +278,10 @@ class _DashboardState extends State<Dashboard> {
       drawer: Drawer(
         width: MediaQuery.of(context).size.width * 0.52,
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Modelcolor.primaryDark2,
-                Modelcolor.backgroundDark,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/bghome2.jpg'),
+              fit: BoxFit.cover,
             ),
           ),
           child: ListView(
@@ -295,24 +291,10 @@ class _DashboardState extends State<Dashboard> {
                 padding: const EdgeInsets.all(15.0),
                 margin: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 12.0),
-                decoration: BoxDecoration(
-                  color: Modelcolor.accentDark,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 8,
-                      offset: const Offset(4, 6),
-                    ),
-                  ],
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 102, 55, 183),
-                      Modelcolor.accentDark,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/avatar.jpg'),
+                    fit: BoxFit.cover,
                   ),
                 ),
                 child: Column(
@@ -470,14 +452,10 @@ class _DashboardState extends State<Dashboard> {
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Modelcolor.primaryDark2,
-                Modelcolor.backgroundDark,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/bghome2.jpg'),
+              fit: BoxFit.cover,
             ),
           ),
           child: ListView(
@@ -502,17 +480,17 @@ class _DashboardState extends State<Dashboard> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
 
                     // Inventory Summary Section
                     Container(
                       padding: const EdgeInsets.all(15.0),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Modelcolor.accentDark.withOpacity(0.7),
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.deepPurple.withOpacity(0.3),
+                            color: Colors.black.withOpacity(0.4),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -521,7 +499,7 @@ class _DashboardState extends State<Dashboard> {
                       child: Column(
                         children: [
                           const Text(
-                            "Inventory Summary",
+                            "Ringkasan Inventory",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -533,29 +511,71 @@ class _DashboardState extends State<Dashboard> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               _buildSummaryCard(
-                                  "Total Products", "500", Icons.inventory),
+                                title: "Pendapatan",
+                                value: "108500000",
+                                icon: Icons.account_balance_wallet_rounded,
+                                iconColor: const Color.fromARGB(255, 18, 210,
+                                    63), // Warna ikon untuk Pendapatan
+                                titleColor: Colors
+                                    .black, // Warna teks untuk title Pendapatan
+                                valueColor: Colors
+                                    .green, // Warna teks untuk value Pendapatan
+                              ),
                               _buildSummaryCard(
-                                  "Total Sales", "1500", Icons.attach_money),
+                                title: "Pengeluaran",
+                                value: "1250000",
+                                icon: Icons.monetization_on_rounded,
+                                iconColor: const Color.fromARGB(255, 254, 56,
+                                    42), // Warna ikon untuk Pengeluaran
+                                titleColor: Colors
+                                    .black, // Warna teks untuk title Pengeluaran
+                                valueColor: Colors
+                                    .redAccent, // Warna teks untuk value Pengeluaran
+                              ),
                               _buildSummaryCard(
-                                  "Low Stock", "25", Icons.warning),
+                                title: "Stok Rendah",
+                                value: "3",
+                                icon: Icons.warning,
+                                iconColor: const Color.fromARGB(255, 225, 178,
+                                    9), // Warna ikon untuk Stok Rendah
+                                titleColor: Colors
+                                    .black, // Warna teks untuk title Stok Rendah
+                                valueColor: const Color.fromARGB(255, 223, 203,
+                                    23), // Warna teks untuk value Stok Rendah
+                              ),
                             ],
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 30),
+
+                    const SizedBox(height: 10),
 
                     // Statistik Section
                     Customcontainer.widgetContainer(
                       context,
-                      Costumgrid.horizontalGrid(context),
+                      Costumlistview.horizontalListView(context),
                       title: "Statistik",
                       height: 255,
                       isCentered: true,
                     ),
                     const SizedBox(height: 30),
-
                     // Tab Section
+                    const Text(
+                      "Grafik Penjualan",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                    ),
                     DefaultTabController(
                       length: 2,
                       child: Column(
@@ -592,8 +612,8 @@ class _DashboardState extends State<Dashboard> {
                               labelStyle: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.bold),
                               tabs: const [
-                                Tab(text: "List Grid"),
-                                Tab(text: "List View"),
+                                Tab(text: "Presentase"),
+                                Tab(text: "Jumlah"),
                               ],
                             ),
                           ),
@@ -619,8 +639,8 @@ class _DashboardState extends State<Dashboard> {
                               height: MediaQuery.of(context).size.height * 0.4,
                               child: TabBarView(
                                 children: [
-                                  Costumgrid.verticalGrid(context),
-                                  Costumlistview.verticalListView(context),
+                                  pieChart(context),
+                                  barChart(context),
                                 ],
                               ),
                             ),
@@ -630,23 +650,37 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     const SizedBox(height: 30),
 
-                    // Produk Section
-                    Customcontainer.widgetContainer(
-                        context, Costumgrid.verticalGrid(context),
-                        title: "Produk", isCentered: true),
-                    const SizedBox(height: 30),
-
-                    // Laporan Section
-                    Customcontainer.widgetContainer(
-                        context, Costumlistview.verticalListView(context),
-                        title: "Laporan", isCentered: true),
-                    const SizedBox(height: 30),
-
+                    const Text(
+                      "Stok & Produk",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                    ),
                     // Stok Section
                     Customcontainer.widgetContainer(
-                        context, produkTabel(context),
-                        title: "Stok", isCentered: true),
-                    const SizedBox(height: 30),
+                        height: 370,
+                        context,
+                        Costumgrid.produkTabel(context),
+                        title: "Stok",
+                        isCentered: true),
+                    const SizedBox(height: 10),
+                    // Produk Section
+                    Customcontainer.widgetContainer(
+                        height: 499,
+                        context,
+                        Costumgrid.verticalGrid(context),
+                        title: "Produk",
+                        isCentered: true),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -659,16 +693,23 @@ class _DashboardState extends State<Dashboard> {
 }
 
 // Custom Widget for Summary Cards
-Widget _buildSummaryCard(String title, String value, IconData icon) {
+Widget _buildSummaryCard({
+  required String title,
+  required String value,
+  required IconData icon,
+  required Color iconColor,
+  required Color titleColor,
+  required Color valueColor, // Menambahkan parameter untuk warna value
+}) {
   return Container(
     width: 100,
     padding: const EdgeInsets.all(10),
     decoration: BoxDecoration(
-      color: Colors.deepPurple.shade200,
+      color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.9),
       borderRadius: BorderRadius.circular(10),
       boxShadow: [
         BoxShadow(
-          color: Colors.deepPurple.withOpacity(0.2),
+          color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.6),
           blurRadius: 6,
           offset: const Offset(0, 4),
         ),
@@ -677,21 +718,24 @@ Widget _buildSummaryCard(String title, String value, IconData icon) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 30, color: Colors.white),
+        Icon(icon, size: 30, color: iconColor), // Warna ikon
         const SizedBox(height: 5),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color:
+                valueColor, // Menggunakan warna yang dapat disesuaikan untuk value
           ),
         ),
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
             fontSize: 12,
-            color: Colors.white70,
+            color: titleColor
+                .withOpacity(0.7), // Warna teks untuk title dengan opasitas
           ),
         ),
       ],
@@ -726,131 +770,6 @@ Widget customListTile({
             );
           }
         },
-  );
-}
-
-Widget produkTabel(BuildContext context) {
-  final List<Map<String, dynamic>> productData = [
-    {
-      "name": "Laptop",
-      "stock": "50",
-      "category": "Elektronik",
-      "price": "15,000,000"
-    },
-    {
-      "name": "Meja Kantor",
-      "stock": "20",
-      "category": "Furniture",
-      "price": "1,200,000"
-    },
-    {
-      "name": "Printer",
-      "stock": "10",
-      "category": "Elektronik",
-      "price": "2,300,000"
-    },
-    {
-      "name": "Monitor",
-      "stock": "25",
-      "category": "Elektronik",
-      "price": "3,500,000"
-    },
-    {
-      "name": "Laptop",
-      "stock": "50",
-      "category": "Elektronik",
-      "price": "15,000,000"
-    },
-    {
-      "name": "Meja Kantor",
-      "stock": "20",
-      "category": "Furniture",
-      "price": "1,200,000"
-    },
-    {
-      "name": "Printer",
-      "stock": "10",
-      "category": "Elektronik",
-      "price": "2,300,000"
-    },
-    {
-      "name": "Monitor",
-      "stock": "25",
-      "category": "Elektronik",
-      "price": "3,500,000"
-    },
-  ];
-
-  return Container(
-    padding: const EdgeInsets.all(12.0),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(15),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.5),
-          blurRadius: 10,
-          spreadRadius: 2,
-        ),
-      ],
-    ),
-    child: SingleChildScrollView(
-      // Add horizontal scrolling
-      scrollDirection: Axis.vertical, // Enable vertical scrolling
-      child: SingleChildScrollView(
-        // Add horizontal scrolling
-        scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-        child: DataTable(
-          columnSpacing: 20,
-          columns: const [
-            DataColumn(
-              label: Text(
-                "Nama",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "Stok",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "Kategori",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                "Harga",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ],
-          rows: productData.map((product) {
-            return DataRow(cells: [
-              DataCell(Text(product["name"])),
-              DataCell(Text(product["stock"])),
-              DataCell(Text(product["category"])),
-              DataCell(Text(product["price"])),
-            ]);
-          }).toList(),
-        ),
-      ),
-    ),
   );
 }
 
@@ -934,7 +853,7 @@ Widget pieChart(BuildContext context) {
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
-                    'Laptop: Produk dengan penjualan tertinggi (40%).',
+                    'Mouse: Produk dengan penjualan tertinggi (40%).',
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                 ),
@@ -951,7 +870,7 @@ Widget pieChart(BuildContext context) {
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
-                    'Smartphone: Menyumbang 30% dari total penjualan.',
+                    'Laptop: Menyumbang 30% dari total penjualan.',
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                 ),
@@ -968,7 +887,7 @@ Widget pieChart(BuildContext context) {
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
-                    'Televisi: Menyumbang 20% dari total penjualan.',
+                    'Kabel USB: Menyumbang 20% dari total penjualan.',
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                 ),
@@ -985,7 +904,7 @@ Widget pieChart(BuildContext context) {
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
-                    'Aksesoris: Menyumbang 10% dari total penjualan.',
+                    'Keyboard: Menyumbang 10% dari total penjualan.',
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                 ),
@@ -1025,7 +944,7 @@ Widget barChart(BuildContext context) {
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
-                    maxY: 20, // Menyesuaikan skala untuk data lebih besar
+                    maxY: 50, // Menyesuaikan skala untuk data lebih besar
                     gridData: FlGridData(
                       show: true,
                       drawHorizontalLine: true,
@@ -1062,22 +981,16 @@ Widget barChart(BuildContext context) {
                           getTitlesWidget: (value, meta) {
                             switch (value.toInt()) {
                               case 1:
-                                return const Text('Laptop',
+                                return const Text('Mouse',
                                     style: TextStyle(fontSize: 8));
                               case 2:
-                                return const Text('Smartphone',
+                                return const Text('Laptop',
                                     style: TextStyle(fontSize: 8));
                               case 3:
-                                return const Text('Televisi',
+                                return const Text('Kabel USB',
                                     style: TextStyle(fontSize: 8));
                               case 4:
-                                return const Text('Aksesoris',
-                                    style: TextStyle(fontSize: 8));
-                              case 5:
-                                return const Text('Tablet',
-                                    style: TextStyle(fontSize: 8));
-                              case 6:
-                                return const Text('Headphone',
+                                return const Text('Keyboard',
                                     style: TextStyle(fontSize: 8));
                               default:
                                 return const Text('');
@@ -1090,7 +1003,7 @@ Widget barChart(BuildContext context) {
                     barGroups: [
                       BarChartGroupData(x: 1, barRods: [
                         BarChartRodData(
-                          toY: 18,
+                          toY: 44,
                           color: Colors.blueAccent,
                           width: 15,
                           borderRadius:
@@ -1099,7 +1012,7 @@ Widget barChart(BuildContext context) {
                       ]),
                       BarChartGroupData(x: 2, barRods: [
                         BarChartRodData(
-                          toY: 15,
+                          toY: 40,
                           color: Colors.redAccent,
                           width: 15,
                           borderRadius:
@@ -1108,7 +1021,7 @@ Widget barChart(BuildContext context) {
                       ]),
                       BarChartGroupData(x: 3, barRods: [
                         BarChartRodData(
-                          toY: 12,
+                          toY: 33,
                           color: Colors.greenAccent.shade700,
                           width: 15,
                           borderRadius:
@@ -1117,26 +1030,8 @@ Widget barChart(BuildContext context) {
                       ]),
                       BarChartGroupData(x: 4, barRods: [
                         BarChartRodData(
-                          toY: 10,
+                          toY: 25,
                           color: Colors.amber.shade600,
-                          width: 15,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)),
-                        ),
-                      ]),
-                      BarChartGroupData(x: 5, barRods: [
-                        BarChartRodData(
-                          toY: 8,
-                          color: Colors.cyan,
-                          width: 15,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)),
-                        ),
-                      ]),
-                      BarChartGroupData(x: 6, barRods: [
-                        BarChartRodData(
-                          toY: 6,
-                          color: Colors.pinkAccent,
                           width: 15,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),

@@ -55,25 +55,37 @@ class DatabaseHelper {
 
           // Menambahkan data awal ke tabel barang_masuk
           await db.rawInsert('''
-            INSERT INTO barang_masuk (kodeBarang, namaBarang, jumlahMasuk, tanggalMasuk, keterangan, foto)
-            VALUES
-            ('BRG001', 'Laptop Dell XPS', 50, '2024-01-15', 'Barang baru dari supplier', 'assets/default_avatar.jpeg'),
-            ('BRG002', 'Mouse Logitech', 30, '2024-01-20', 'Stok tambahan', 'assets/default_avatar.jpeg'),
-            ('BRG003', 'Keyboard Mechanical', 20, '2024-01-25', 'Barang populer', 'assets/default_avatar.jpeg'),
-            ('BRG004', 'Mouse Wireless', 50, '2024-01-20', 'Stok tambahan', 'assets/default_avatar.jpeg'),
-            ('BRG005', 'Keyboard Mechanical2', 20, '2024-01-25', 'Barang populer', 'assets/default_avatar.jpeg')
-          ''');
+          INSERT INTO barang_masuk (kodeBarang, namaBarang, jumlahMasuk, tanggalMasuk, keterangan, foto)
+          VALUES
+          ('BRG001', 'Laptop Dell XPS', 15, '2024-11-13', 'Barang baru dari supplier', 'assets/laptop_dell.jpeg'),
+          ('BRG002', 'Mouse Logitech Wireless', 25, '2024-11-12', 'Stok tambahan', 'assets/mouse_logitech_wireless.jpeg'),
+          ('BRG003', 'Keyboard Mechanical', 20, '2024-11-15', 'Barang populer', 'assets/keyboard_mechanical.png'),
+          ('BRG004', 'Mouse Wireless', 35, '2024-11-10', 'Stok tambahan', 'assets/mouse_wireless.jpeg'),
+          ('BRG005', 'Keyboard Mechanical RGB', 17, '2024-11-11', 'Barang populer', 'assets/keyboard_mechanical_rgb.jpeg'),
+          ('BRG006', 'Laptop Acer Nitro 5', 12, '2024-11-13', 'Barang baru dari supplier', 'assets/laptop_acer_nitro_5.jpeg'),
+          ('BRG007', 'Laptop Acer Special Edition', 50, '2024-11-13', 'Barang baru dari supplier', 'assets/laptop_acer_se.jpeg'),
+          ('BRG008', 'Kabel USB Type C', 55, '2024-11-09', 'Barang baru dari supplier', 'assets/usb_type_c.jpeg'),
+          ('BRG009', 'Kabel USB Type A', 30, '2024-11-10', 'Barang baru dari supplier', 'assets/usb_type_a.jpeg'),
+          ('BRG010', 'Mouse Logitech M100r', 28, '2024-11-12', 'Stok tambahan', 'assets/mouse_logitech.jpeg'),
+          ('BRG011', 'Keyboard Mechanical Costume', 18, '2024-11-09', 'Barang populer', 'assets/keyboard_mechanical_costume.jpeg');
+        ''');
 
           // Menambahkan data awal ke tabel barang_keluar
           await db.rawInsert('''
-            INSERT INTO barang_keluar (kodeBarang, namaBarang, jumlahKeluar, tanggalKeluar, keterangan, foto)
-            VALUES
-            ('BRG001', 'Laptop Dell XPS', 24, '2024-01-18', 'Pengiriman ke cabang', 'assets/default_avatar.jpeg'),
-            ('BRG002', 'Mouse Logitech', 12, '2024-01-22', 'Dijual ke pelanggan', 'assets/default_avatar.jpeg'),
-            ('BRG003', 'Keyboard Mechanical', 16, '2024-01-25', 'Barang populer', 'assets/default_avatar.jpeg'),
-            ('BRG004', 'Mouse Wireless', 50, '2024-01-20', 'Barang populer', 'assets/default_avatar.jpeg'),
-            ('BRG005', 'Keyboard Mechanical2', 20, '2024-01-25', 'Barang populer', 'assets/default_avatar.jpeg')
-          ''');
+          INSERT INTO barang_keluar (kodeBarang, namaBarang, jumlahKeluar, tanggalKeluar, keterangan, foto)
+          VALUES
+          ('BRG001', 'Laptop Dell XPS', 8, '2024-11-18', 'Pengiriman ke cabang', 'assets/laptop_dell.jpeg'),
+          ('BRG002', 'Mouse Logitech Wireless', 17, '2024-11-17', 'Dijual ke pelanggan', 'assets/mouse_logitech_wireless.jpeg'),
+          ('BRG003', 'Keyboard Mechanical', 7, '2024-11-16', 'Barang populer', 'assets/keyboard_mechanical.png'),
+          ('BRG004', 'Mouse Wireless', 15, '2024-11-19', 'Barang populer', 'assets/mouse_wireless.jpeg'),
+          ('BRG005', 'Keyboard Mechanical RGB', 12, '2024-11-17', 'Barang populer', 'assets/keyboard_mechanical_rgb.jpeg'),
+          ('BRG006', 'Laptop Acer Nitro 5', 5, '2024-11-17', 'Dijual ke pelanggan', 'assets/laptop_acer_nitro_5.jpeg'),
+          ('BRG007', 'Laptop Acer Special Edition', 27, '2024-11-13', 'Pengiriman ke cabang', 'assets/laptop_acer_se.jpeg'),
+          ('BRG008', 'Kabel USB Type C', 22, '2024-11-14', 'Barang populer', 'assets/usb_type_c.jpeg'),
+          ('BRG009', 'Kabel USB Type A', 11, '2024-11-12', 'Pengiriman ke cabang', 'assets/usb_type_a.jpeg'),
+          ('BRG010', 'Mouse Logitech M100r', 12, '2024-11-14', 'Dijual ke pelanggan', 'assets/mouse_logitech.jpeg'),
+          ('BRG011', 'Keyboard Mechanical Costume', 6, '2024-11-12', 'Dijual ke pelanggan', 'assets/keyboard_mechanical_costume.jpeg');
+        ''');
         },
       );
     } catch (e) {

@@ -70,8 +70,7 @@ class _UbahProfileState extends State<UbahProfile> {
                 'email': email,
                 'alamat': address,
                 'notlp': phone,
-                'foto': photoUrl ??
-                    'assets/default_avatar.jpeg', // Set default photo if null
+                'foto': photoUrl ?? 'assets/default_avatar.jpeg',
               },
               where: 'iduser = ?',
               whereArgs: [widget.userId],
@@ -147,12 +146,11 @@ class _UbahProfileState extends State<UbahProfile> {
         ],
       ),
       body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Modelcolor.primaryDark2, Modelcolor.backgroundDark],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        constraints: const BoxConstraints.expand(), // Mengisi seluruh layar
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/bghome2.jpg'),
+            fit: BoxFit.cover, // Foto memenuhi layar
           ),
         ),
         child: SingleChildScrollView(
@@ -160,12 +158,10 @@ class _UbahProfileState extends State<UbahProfile> {
           child: Form(
             key: _formKey,
             child: Container(
-              padding:
-                  const EdgeInsets.all(16.0), // Padding around the container
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.white
-                    .withOpacity(0.9), // Light background for the container
-                borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(12.0),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -182,7 +178,7 @@ class _UbahProfileState extends State<UbahProfile> {
                                   photoUrl!.isNotEmpty)
                               ? FileImage(File(photoUrl!))
                               : const AssetImage('assets/default_avatar.jpeg')
-                                  as ImageProvider, // Default photo
+                                  as ImageProvider,
                           backgroundColor: Colors.grey.shade300,
                           child: photoUrl == null
                               ? const Icon(
@@ -210,8 +206,7 @@ class _UbahProfileState extends State<UbahProfile> {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
-                    initialValue:
-                        name ?? '', // Use empty string if name is null
+                    initialValue: name ?? '',
                     decoration: InputDecoration(
                       labelText: 'Nama',
                       border: OutlineInputBorder(
@@ -226,8 +221,7 @@ class _UbahProfileState extends State<UbahProfile> {
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
-                    initialValue:
-                        email ?? '', // Use empty string if email is null
+                    initialValue: email ?? '',
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(
@@ -241,8 +235,7 @@ class _UbahProfileState extends State<UbahProfile> {
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
-                    initialValue:
-                        address ?? '', // Use empty string if address is null
+                    initialValue: address ?? '',
                     decoration: InputDecoration(
                       labelText: 'Alamat',
                       border: OutlineInputBorder(
@@ -255,8 +248,7 @@ class _UbahProfileState extends State<UbahProfile> {
                   ),
                   const SizedBox(height: 15),
                   TextFormField(
-                    initialValue:
-                        phone ?? '', // Use empty string if phone is null
+                    initialValue: phone ?? '',
                     decoration: InputDecoration(
                       labelText: 'No. Telp',
                       border: OutlineInputBorder(
