@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 10),
 
                 // App Name
-                // App Name with Shadow Effect (shadow ke bawah)
                 ShaderMask(
                   shaderCallback: (bounds) => const LinearGradient(
                     colors: [Colors.amber, Colors.deepOrange],
@@ -152,17 +151,22 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 40),
 
-                // Login Button
+                // Login Button with 3D effect
                 ElevatedButton(
                   onPressed: _isLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber.shade700,
-                    minimumSize: const Size(200, 60),
+                    backgroundColor: Colors.amber.shade700, // Background color
+                    minimumSize: const Size(180, 60),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius:
+                          BorderRadius.circular(30), // Rounded corners
                     ),
-                    elevation: 10,
-                    shadowColor: Colors.black38,
+                    elevation:
+                        15, // More elevation for a stronger shadow effect
+                    shadowColor: Colors.black.withOpacity(0.5), // Shadow color
+                    side: BorderSide(
+                        color: Colors.amber.shade600,
+                        width: 0.5), // Border for depth
                   ),
                   child: _isLoading
                       ? const SizedBox(
@@ -179,9 +183,11 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            letterSpacing:
+                                1.2, // Slight spacing between letters for a clean look
                           ),
                         ),
-                ),
+                )
               ],
             ),
           ),

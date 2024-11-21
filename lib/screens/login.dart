@@ -239,12 +239,16 @@ class _LoginPageState extends State<LoginPage> {
                       : ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 15),
-                            backgroundColor: Colors.deepPurple.shade600,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            backgroundColor: Colors.deepPurple.shade700,
+                            minimumSize: const Size(145, 30),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
+                              borderRadius: BorderRadius.circular(17),
                             ),
+                            elevation: 10,
+                            shadowColor: Colors.black.withOpacity(0.5),
+                            side: BorderSide(
+                                color: Colors.deepPurple.shade500, width: 0.5),
                           ),
                           child: const Text(
                             'Login',

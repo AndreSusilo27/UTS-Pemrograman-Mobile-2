@@ -333,11 +333,17 @@ class RegisterPageState extends State<RegisterPage> {
                     onPressed: _isLoading ? null : _register,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 50.0),
-                      backgroundColor: Colors.deepPurple.shade600,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        vertical: 16.0,
                       ),
+                      backgroundColor: Colors.deepPurple.shade700,
+                      minimumSize: const Size(145, 30),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(17),
+                      ),
+                      elevation: 10,
+                      shadowColor: Colors.black.withOpacity(0.5),
+                      side: BorderSide(
+                          color: Colors.deepPurple.shade500, width: 0.5),
                     ),
                     child: _isLoading
                         ? const CircularProgressIndicator()
