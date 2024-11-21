@@ -96,9 +96,8 @@ class _JadwalRestokPageState extends State<JadwalRestokPage> {
                         child: Column(
                           children: [
                             _buildTextField(
-                              controller:
-                                  _judulController, // Menggunakan controller judul
-                              label: 'Judul', // Label untuk judul
+                              controller: _judulController,
+                              label: 'Judul',
                               icon: Icons.title_rounded,
                             ),
                             const SizedBox(height: 10),

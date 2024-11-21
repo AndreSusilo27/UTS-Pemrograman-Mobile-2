@@ -18,10 +18,7 @@ class Tentang extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-                top: 90.0,
-                left: 35.0,
-                right: 35.0), // Padding atas, kiri, dan kanan
+            padding: const EdgeInsets.only(top: 90.0, left: 35.0, right: 35.0),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

@@ -33,8 +33,7 @@ class _BarangMasukPageState extends State<BarangMasukPage> {
           ),
         ),
         child: Align(
-          alignment: Alignment
-              .topCenter, // Memastikan elemen berada di bagian atas tengah
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(10.0),
             child: Container(

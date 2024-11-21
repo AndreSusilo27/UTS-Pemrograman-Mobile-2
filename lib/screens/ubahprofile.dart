@@ -146,11 +146,11 @@ class _UbahProfileState extends State<UbahProfile> {
         ],
       ),
       body: Container(
-        constraints: const BoxConstraints.expand(), // Mengisi seluruh layar
+        constraints: const BoxConstraints.expand(),
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/bghome2.jpg'),
-            fit: BoxFit.cover, // Foto memenuhi layar
+            fit: BoxFit.cover,
           ),
         ),
         child: SingleChildScrollView(

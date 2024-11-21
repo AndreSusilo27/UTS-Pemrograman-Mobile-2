@@ -76,11 +76,9 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Header dengan gambar
                   Center(
                     child: GestureDetector(
-                      onTap:
-                          _pickImage, // Menggunakan CircleAvatar langsung untuk memilih gambar
+                      onTap: _pickImage,
                       child: CircleAvatar(
                         radius: 68,
                         backgroundColor: Colors.grey[200],
@@ -111,9 +109,7 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 30),
-
                   _buildInputField(
                     label: "Kode Barang (Wajib)",
                     hint: "Masukkan kode barang",
@@ -213,8 +209,6 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-
-                  // Bagian lainnya (opsional)
                   ExpansionTile(
                     title: const Text(
                       "Lainnya",
@@ -238,9 +232,7 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
-
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

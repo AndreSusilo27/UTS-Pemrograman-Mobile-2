@@ -87,21 +87,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   margin: const EdgeInsets.symmetric(
                       vertical: 20.0, horizontal: 15.0),
                   decoration: BoxDecoration(
-                    color:
-                        Colors.white.withOpacity(0.1), // Warna cerah transparan
-                    borderRadius:
-                        BorderRadius.circular(20), // Sudut tidak lancip
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color:
-                          Colors.blueAccent.withOpacity(0.6), // Border menyala
+                      color: Colors.blueAccent.withOpacity(0.6),
                       width: 2.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blueAccent
-                            .withOpacity(0.4), // Shadow menyala lembut
-                        blurRadius: 15, // Radius blur shadow
-                        offset: const Offset(0, 5), // Posisi shadow
+                        color: Colors.blueAccent.withOpacity(0.4),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
                       ),
                     ],
                   ),
@@ -116,16 +112,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: Colors.white
-                                .withOpacity(0.8), // Border putih untuk foto
+                            color: Colors.white.withOpacity(0.8),
                             width: 2.0,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  Colors.white.withOpacity(0.4), // Shadow putih
-                              blurRadius: 8, // Blur shadow
-                              offset: const Offset(0, 4), // Posisi shadow
+                              color: Colors.white.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                           image: DecorationImage(
@@ -148,14 +142,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             textStyle: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white, // Teks putih agar kontras
+                              color: Colors.white,
                               letterSpacing: 1.2,
                             ),
-                            speed: const Duration(
-                                milliseconds: 150), // Kecepatan animasi
+                            speed: const Duration(milliseconds: 150),
                           ),
                         ],
-                        isRepeatingAnimation: false, // Tidak berulang
+                        isRepeatingAnimation: false,
                       ),
                     ],
                   ),

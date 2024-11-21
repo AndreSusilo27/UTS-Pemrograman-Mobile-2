@@ -817,8 +817,8 @@ Widget customListTile({
   Color iconColor = Colors.white,
   Color textColor = Colors.white,
   Color tileColor = Colors.deepPurple,
-  VoidCallback? onTap, // Callback opsional untuk aksi
-  Widget? destinationPage, // Halaman tujuan opsional
+  VoidCallback? onTap,
+  Widget? destinationPage,
 }) {
   return ListTile(
     leading: Icon(icon, color: iconColor),
@@ -830,7 +830,6 @@ Widget customListTile({
     onTap: onTap ??
         () {
           if (destinationPage != null) {
-            // Navigasi ke halaman jika destinationPage disediakan
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => destinationPage),
@@ -1003,23 +1002,22 @@ Widget barChart(BuildContext context) {
             ),
           ),
           const SizedBox(height: 10),
-          // Tambahkan SingleChildScrollView
           Expanded(
             child: SingleChildScrollView(
               child: SizedBox(
-                height: 400, // Menyesuaikan tinggi sesuai kebutuhan
+                height: 400,
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
-                    maxY: 50, // Menyesuaikan skala untuk data lebih besar
+                    maxY: 50,
                     gridData: FlGridData(
                       show: true,
                       drawHorizontalLine: true,
                       horizontalInterval: 5,
                       getDrawingHorizontalLine: (value) {
                         return const FlLine(
-                          color: Colors.grey, // Warna garis horizontal
-                          strokeWidth: 0.5, // Ketebalan garis
+                          color: Colors.grey,
+                          strokeWidth: 0.5,
                         );
                       },
                     ),

@@ -1,8 +1,8 @@
 //Andre Susilo
 //21552011246
+//TIFRM22CID
 //Pemrograman Mobile 2
 //Aplikasi Sikoin Untuk Inventaris
-//TIFRM22CID
 
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -63,18 +63,17 @@ class _HomePageState extends State<HomePage> {
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/bghome2.jpg'),
-            fit: BoxFit.cover, // Menjaga gambar tetap ter-cover
+            fit: BoxFit.cover,
           ),
         ),
         child: Center(
           child: Customcontainer.widgetContainerWithGlow(
             context,
-            width: 350, // Sesuaikan lebar container
-            height: 480, // Sesuaikan tinggi container
+            width: 350,
+            height: 480,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // App Logo with Image
                 Container(
                   width: 200,
                   height: 200,
@@ -112,11 +111,9 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       shadows: [
                         Shadow(
-                          blurRadius: 5.0, // Efek blur pada bayangan
-                          offset:
-                              Offset(0.0, 3.0), // Bayangan bergeser ke bawah
-                          color: Color.fromRGBO(0, 0, 0,
-                              0.5), // Warna bayangan hitam dengan opacity
+                          blurRadius: 5.0,
+                          offset: Offset(0.0, 3.0),
+                          color: Color.fromRGBO(0, 0, 0, 0.5),
                         ),
                       ],
                     ),
@@ -151,22 +148,18 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 40),
 
-                // Login Button with 3D effect
+                // Login Button
                 ElevatedButton(
                   onPressed: _isLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber.shade700, // Background color
+                    backgroundColor: Colors.amber.shade700,
                     minimumSize: const Size(180, 60),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(30), // Rounded corners
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    elevation:
-                        15, // More elevation for a stronger shadow effect
-                    shadowColor: Colors.black.withOpacity(0.5), // Shadow color
-                    side: BorderSide(
-                        color: Colors.amber.shade600,
-                        width: 0.5), // Border for depth
+                    elevation: 15,
+                    shadowColor: Colors.black.withOpacity(0.5),
+                    side: BorderSide(color: Colors.amber.shade600, width: 0.5),
                   ),
                   child: _isLoading
                       ? const SizedBox(
@@ -183,8 +176,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            letterSpacing:
-                                1.2, // Slight spacing between letters for a clean look
+                            letterSpacing: 1.2,
                           ),
                         ),
                 )

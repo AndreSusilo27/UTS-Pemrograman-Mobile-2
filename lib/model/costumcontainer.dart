@@ -6,16 +6,15 @@ class Customcontainer {
     Widget child, {
     String title = "Judul",
     bool isCentered = false,
-    double? width, // Lebar yang dapat disesuaikan
-    double? height, // Tinggi yang dapat disesuaikan
+    double? width,
+    double? height,
   }) {
     return SizedBox(
-      width: width, // Gunakan lebar yang diberikan, jika ada
-      height: height ?? 340, // Gunakan tinggi yang diberikan, atau default 340
+      width: width,
+      height: height ?? 340,
       child: Container(
-        margin: const EdgeInsets.symmetric(
-            horizontal: 5, vertical: 5), // Margin luar
-        padding: const EdgeInsets.all(10), // Padding dalam
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -25,27 +24,23 @@ class Customcontainer {
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-          ), // Gradien untuk latar belakang utama
-          borderRadius: BorderRadius.circular(15), // Sudut membulat
+          ),
+          borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color:
-                  Colors.deepPurple.shade200.withOpacity(0.3), // Warna bayangan
-              blurRadius: 15, // Tingkat blur bayangan
-              offset: const Offset(0, 6), // Posisi bayangan
+              color: Colors.deepPurple.shade200.withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
         child: Column(
-          crossAxisAlignment: isCentered
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.start, // Menentukan posisi judul
+          crossAxisAlignment:
+              isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
           children: [
-            // Header judul
             Container(
-              width: double.infinity, // Membuat judul penuh
-              padding: const EdgeInsets.symmetric(
-                  vertical: 8, horizontal: 12), // Padding dalam judul
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -54,46 +49,41 @@ class Customcontainer {
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                ), // Gradien untuk latar belakang judul
-                borderRadius: BorderRadius.circular(12), // Sudut membulat
+                ),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.deepPurpleAccent
-                        .withOpacity(0.4), // Bayangan judul
-                    blurRadius: 8, // Tingkat blur bayangan
-                    offset: const Offset(0, 4), // Posisi bayangan judul
+                    color: Colors.deepPurpleAccent.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: Text(
-                title, // Menggunakan parameter title untuk judul
-                textAlign: isCentered
-                    ? TextAlign.center
-                    : TextAlign
-                        .left, // Menentukan apakah teks di tengah atau tidak
+                title,
+                textAlign: isCentered ? TextAlign.center : TextAlign.left,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white, // Warna teks judul
+                  color: Colors.white,
                   shadows: [
                     Shadow(
                       blurRadius: 2,
-                      color: Colors.black38, // Efek bayangan teks
+                      color: Colors.black38,
                       offset: Offset(1, 1),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 10), // Spasi antara judul dan konten
+            const SizedBox(height: 10),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white
-                      .withOpacity(0.9), // Warna latar belakang konten
-                  borderRadius: BorderRadius.circular(10), // Sudut membulat
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: child, // Konten yang bisa diisi dengan widget lain
+                child: child,
               ),
             ),
           ],
@@ -102,32 +92,29 @@ class Customcontainer {
     );
   }
 
-// Fungsi untuk membuat container dengan efek glow menggunakan DeepPurple
   static Widget widgetContainerWithGlow(BuildContext context,
       {required Widget child, double? width, double? height}) {
     return Container(
-      width: width ?? double.infinity, // Menyesuaikan lebar
-      height: height ?? double.infinity, // Menyesuaikan tinggi
+      width: width ?? double.infinity,
+      height: height ?? double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white
-            .withOpacity(0.3), // Set background color dengan opacity
-        borderRadius: BorderRadius.circular(15), // Rounded corners
+        color: Colors.white.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(15),
         border: Border.all(
-          color: Colors.blue.shade600, // Gunakan DeepPurple untuk border
-          width: 3, // Lebar border
+          color: Colors.blue.shade600,
+          width: 3,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color.fromARGB(255, 5, 8, 147)
-                .withOpacity(0.8), // Warna shadow DeepPurple
+            color: const Color.fromARGB(255, 5, 8, 147).withOpacity(0.8),
             blurRadius: 25,
             offset: const Offset(0, 5),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(20), // Padding di dalam container
-      margin: const EdgeInsets.all(20), // Margin sekitar container
-      child: child, // Menyertakan widget anak
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
+      child: child,
     );
   }
 }
