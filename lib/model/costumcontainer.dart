@@ -113,12 +113,12 @@ class Customcontainer {
             .withOpacity(0.3), // Set background color dengan opacity
         borderRadius: BorderRadius.circular(15), // Rounded corners
         border: Border.all(
-          color: Colors.deepPurple.shade600, // Gunakan DeepPurple untuk border
+          color: Colors.blue.shade600, // Gunakan DeepPurple untuk border
           width: 3, // Lebar border
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color.fromARGB(255, 144, 93, 233)
+            color: const Color.fromARGB(255, 5, 8, 147)
                 .withOpacity(0.8), // Warna shadow DeepPurple
             blurRadius: 25,
             offset: const Offset(0, 5),

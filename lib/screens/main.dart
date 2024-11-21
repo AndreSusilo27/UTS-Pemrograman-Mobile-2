@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                         Shadow(
                           blurRadius: 5.0, // Efek blur pada bayangan
                           offset:
-                              Offset(0.0, 5.0), // Bayangan bergeser ke bawah
+                              Offset(0.0, 3.0), // Bayangan bergeser ke bawah
                           color: Color.fromRGBO(0, 0, 0,
                               0.5), // Warna bayangan hitam dengan opacity
                         ),
