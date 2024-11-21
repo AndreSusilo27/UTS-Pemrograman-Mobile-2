@@ -9,7 +9,10 @@ class JadwalRestokPage extends StatefulWidget {
 }
 
 class _JadwalRestokPageState extends State<JadwalRestokPage> {
-  final TextEditingController _itemController = TextEditingController();
+  final TextEditingController _judulController =
+      TextEditingController(); // Controller untuk Judul
+  final TextEditingController _itemController =
+      TextEditingController(); // Controller untuk Nama Barang
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final List<Map<String, dynamic>> _schedules = [];
@@ -29,7 +32,9 @@ class _JadwalRestokPageState extends State<JadwalRestokPage> {
   }
 
   void _addSchedule() {
-    if (_itemController.text.isEmpty ||
+    if (_judulController.text.isEmpty || // Periksa _judulController untuk Judul
+        _itemController
+            .text.isEmpty || // Periksa _itemController untuk Nama Barang
         _quantityController.text.isEmpty ||
         _dateController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -40,6 +45,7 @@ class _JadwalRestokPageState extends State<JadwalRestokPage> {
 
     final newSchedule = {
       'item': _itemController.text,
+      'judul': _judulController.text, // Pastikan judul dimasukkan
       'quantity': _quantityController.text,
       'date': _dateController.text,
     };
@@ -52,6 +58,8 @@ class _JadwalRestokPageState extends State<JadwalRestokPage> {
       const SnackBar(content: Text('Jadwal restock berhasil ditambahkan!')),
     );
 
+    // Clear input fields
+    _judulController.clear();
     _itemController.clear();
     _quantityController.clear();
     _dateController.clear();
@@ -88,6 +96,13 @@ class _JadwalRestokPageState extends State<JadwalRestokPage> {
                         child: Column(
                           children: [
                             _buildTextField(
+                              controller:
+                                  _judulController, // Menggunakan controller judul
+                              label: 'Judul', // Label untuk judul
+                              icon: Icons.title_rounded,
+                            ),
+                            const SizedBox(height: 10),
+                            _buildTextField(
                               controller: _itemController,
                               label: 'Nama Barang',
                               icon: Icons.inventory,
@@ -95,14 +110,14 @@ class _JadwalRestokPageState extends State<JadwalRestokPage> {
                             const SizedBox(height: 10),
                             _buildTextField(
                               controller: _quantityController,
-                              label: 'Jumlah Restock',
+                              label: 'Jumlah',
                               icon: Icons.add_shopping_cart,
                               keyboardType: TextInputType.number,
                             ),
                             const SizedBox(height: 10),
                             _buildTextField(
                               controller: _dateController,
-                              label: 'Tanggal Restock',
+                              label: 'Tanggal',
                               icon: Icons.calendar_today,
                               isReadOnly: true,
                               onTap: () => _selectDate(context),
@@ -159,13 +174,13 @@ class _JadwalRestokPageState extends State<JadwalRestokPage> {
                                         ),
                                       ),
                                       title: Text(
-                                        schedule['item'],
+                                        schedule['judul'], // Menampilkan judul
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       subtitle: Text(
-                                        'Jumlah: ${schedule['quantity']} | Tanggal: ${schedule['date']}',
+                                        'Nama Barang: ${schedule['item']} | Jumlah: ${schedule['quantity']} | Tanggal: ${schedule['date']}',
                                         style: TextStyle(
                                             color: Colors.grey.shade700),
                                       ),
