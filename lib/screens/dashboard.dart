@@ -503,233 +503,255 @@ class _DashboardState extends State<Dashboard> {
               fit: BoxFit.cover,
             ),
           ),
-          child: ListView(
-            padding: const EdgeInsets.all(20.0),
-            children: [
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Dashboard",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 3.0,
-                            color: Colors.black,
-                            offset: Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Inventory Summary Section
-                    Container(
-                      padding: const EdgeInsets.all(15.0),
-                      decoration: BoxDecoration(
-                        color: Modelcolor.accentDark.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.4),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Ringkasan Inventory",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _buildSummaryCard(
-                                title: "Pendapatan",
-                                value: "108500000",
-                                icon: Icons.account_balance_wallet_rounded,
-                                iconColor: const Color.fromARGB(255, 18, 210,
-                                    63), // Warna ikon untuk Pendapatan
-                                titleColor: Colors
-                                    .black, // Warna teks untuk title Pendapatan
-                                valueColor: Colors
-                                    .green, // Warna teks untuk value Pendapatan
-                              ),
-                              _buildSummaryCard(
-                                title: "Pengeluaran",
-                                value: "1250000",
-                                icon: Icons.monetization_on_rounded,
-                                iconColor: const Color.fromARGB(255, 254, 56,
-                                    42), // Warna ikon untuk Pengeluaran
-                                titleColor: Colors
-                                    .black, // Warna teks untuk title Pengeluaran
-                                valueColor: Colors
-                                    .redAccent, // Warna teks untuk value Pengeluaran
-                              ),
-                              _buildSummaryCard(
-                                title: "Stok Rendah",
-                                value: "3",
-                                icon: Icons.warning,
-                                iconColor: const Color.fromARGB(255, 225, 178,
-                                    9), // Warna ikon untuk Stok Rendah
-                                titleColor: Colors
-                                    .black, // Warna teks untuk title Stok Rendah
-                                valueColor: const Color.fromARGB(255, 223, 203,
-                                    23), // Warna teks untuk value Stok Rendah
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: ListView(
+                children: [
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Dashboard",
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 3.0,
+                                color: Colors.black26,
+                                offset: Offset(2, 2),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                        const SizedBox(height: 10),
 
-                    const SizedBox(height: 10),
-
-                    // Statistik Section
-                    Customcontainer.widgetContainer(
-                      context,
-                      Costumlistview.horizontalListView(context),
-                      title: "Statistik",
-                      height: 255,
-                      isCentered: true,
-                    ),
-                    const SizedBox(height: 30),
-                    // Tab Section
-                    const Text(
-                      "Grafik Penjualan",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 3.0,
-                            color: Colors.black,
-                            offset: Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                    ),
-                    DefaultTabController(
-                      length: 2,
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.shade100,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.deepPurple.withOpacity(0.2),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
+                        // Inventory Summary Section
+                        Container(
+                          padding: const EdgeInsets.all(15.0),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.deepPurpleAccent.shade100,
+                                Colors.deepPurpleAccent.shade200,
                               ],
                             ),
-                            child: TabBar(
-                              indicator: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.deepPurple.withOpacity(0.3),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 5),
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.deepPurpleAccent.withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Ringkasan Inventory",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  _buildSummaryCard(
+                                    title: "Pendapatan",
+                                    value: "108500000",
+                                    icon: Icons.account_balance_wallet_rounded,
+                                    iconColor: Colors.green,
+                                    titleColor: Colors.black,
+                                    valueColor: Colors.green,
+                                  ),
+                                  _buildSummaryCard(
+                                    title: "Pengeluaran",
+                                    value: "1250000",
+                                    icon: Icons.monetization_on_rounded,
+                                    iconColor: Colors.red,
+                                    titleColor: Colors.black,
+                                    valueColor: Colors.redAccent,
+                                  ),
+                                  _buildSummaryCard(
+                                    title: "Stok Rendah",
+                                    value: "3",
+                                    icon: Icons.warning,
+                                    iconColor: Colors.orange,
+                                    titleColor: Colors.black,
+                                    valueColor: Colors.amber,
                                   ),
                                 ],
                               ),
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              labelColor: Colors.deepPurple.shade700,
-                              unselectedLabelColor: Colors.deepPurple.shade300,
-                              labelStyle: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                              tabs: const [
-                                Tab(text: "Presentase"),
-                                Tab(text: "Jumlah"),
-                              ],
-                            ),
+                            ],
                           ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.8),
-                              border: Border.all(
-                                color: Colors.deepPurple.shade300,
-                                width: 0.3,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.deepPurple.withOpacity(0.2),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.4,
-                              child: TabBarView(
-                                children: [
-                                  pieChart(context),
-                                  barChart(context),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 30),
+                        ),
 
-                    const Text(
-                      "Stok & Produk",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 3.0,
-                            color: Colors.black,
-                            offset: Offset(2, 2),
+                        const Divider(color: Colors.deepPurple, height: 20),
+                        const SizedBox(height: 10),
+
+                        // Statistik Section
+                        Customcontainer.widgetContainer(
+                          context,
+                          Costumlistview.horizontalListView(context),
+                          title: "Statistik",
+                          height: 255,
+                          isCentered: true,
+                        ),
+                        const Divider(color: Colors.deepPurple, height: 20),
+                        const SizedBox(height: 30),
+
+                        // Tab Section
+                        const Text(
+                          "Grafik Penjualan",
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 3.0,
+                                color: Colors.black26,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        DefaultTabController(
+                          length: 2,
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple.shade100,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.deepPurple.withOpacity(0.2),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: TabBar(
+                                  indicator: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            Colors.deepPurple.withOpacity(0.3),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  indicatorSize: TabBarIndicatorSize.tab,
+                                  labelColor: Colors.deepPurple.shade700,
+                                  unselectedLabelColor:
+                                      Colors.deepPurple.shade300,
+                                  labelStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                  tabs: const [
+                                    Tab(text: "Presentase"),
+                                    Tab(text: "Jumlah"),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 4),
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.8),
+                                  border: Border.all(
+                                      color: Colors.deepPurple.shade300,
+                                      width: 0.3),
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.deepPurple.withOpacity(0.2),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.4,
+                                  child: TabBarView(
+                                    children: [
+                                      pieChart(context),
+                                      barChart(context),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Divider(color: Colors.deepPurple, height: 20),
+                        const SizedBox(height: 30),
+
+                        const Text(
+                          "Stok & Produk",
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 3.0,
+                                color: Colors.black26,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Customcontainer.widgetContainer(
+                          height: 370,
+                          context,
+                          Costumgrid.produkTabel(context),
+                          title: "Stok",
+                          isCentered: true,
+                        ),
+
+                        const SizedBox(height: 10),
+                        Customcontainer.widgetContainer(
+                          height: 499,
+                          context,
+                          Costumgrid.verticalGrid(context),
+                          title: "Produk",
+                          isCentered: true,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
                     ),
-                    // Stok Section
-                    Customcontainer.widgetContainer(
-                        height: 370,
-                        context,
-                        Costumgrid.produkTabel(context),
-                        title: "Stok",
-                        isCentered: true),
-                    const SizedBox(height: 10),
-                    // Produk Section
-                    Customcontainer.widgetContainer(
-                        height: 499,
-                        context,
-                        Costumgrid.verticalGrid(context),
-                        title: "Produk",
-                        isCentered: true),
-                    const SizedBox(height: 10),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

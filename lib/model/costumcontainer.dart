@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pemmob2/model/modelcolor.dart';
 
 class Customcontainer {
-  static widgetContainer(
+  static Widget widgetContainer(
     BuildContext context,
     Widget child, {
     String title = "Judul",
@@ -18,40 +17,50 @@ class Customcontainer {
             horizontal: 5, vertical: 5), // Margin luar
         padding: const EdgeInsets.all(10), // Padding dalam
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(
-              0.5), // Transparansi lebih banyak untuk container utama
-          borderRadius: BorderRadius.circular(15), // Sudut membulat lebih besar
+          gradient: LinearGradient(
+            colors: [
+              Colors.deepPurple.shade400,
+              Colors.deepPurple.shade600,
+              Colors.deepPurple.shade800,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ), // Gradien untuk latar belakang utama
+          borderRadius: BorderRadius.circular(15), // Sudut membulat
           boxShadow: [
             BoxShadow(
               color:
-                  Colors.black.withOpacity(0.2), // Warna bayangan lebih gelap
-              blurRadius: 15, // Tingkat blur bayangan yang lebih besar
-              offset: const Offset(0, 6), // Posisi bayangan lebih terlihat
+                  Colors.deepPurple.shade200.withOpacity(0.3), // Warna bayangan
+              blurRadius: 15, // Tingkat blur bayangan
+              offset: const Offset(0, 6), // Posisi bayangan
             ),
           ],
-          border: Border.all(
-            color: Modelcolor.whiteTransparent20
-                .withOpacity(0.2), // Border lebih tipis dan transparan
-            width: 1,
-          ),
         ),
         child: Column(
           crossAxisAlignment: isCentered
               ? CrossAxisAlignment.center
               : CrossAxisAlignment.start, // Menentukan posisi judul
           children: [
+            // Header judul
             Container(
-              width: double.infinity, // Membuat background judul penuh
+              width: double.infinity, // Membuat judul penuh
               padding: const EdgeInsets.symmetric(
                   vertical: 8, horizontal: 12), // Padding dalam judul
               decoration: BoxDecoration(
-                color: Modelcolor.whiteTransparent10.withOpacity(
-                    0.85), // Warna latar belakang judul dengan transparansi
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.deepPurpleAccent.shade100,
+                    Colors.deepPurpleAccent.shade200,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ), // Gradien untuk latar belakang judul
                 borderRadius: BorderRadius.circular(12), // Sudut membulat
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3), // Bayangan judul
-                    blurRadius: 10, // Tingkat blur bayangan
+                    color: Colors.deepPurpleAccent
+                        .withOpacity(0.4), // Bayangan judul
+                    blurRadius: 8, // Tingkat blur bayangan
                     offset: const Offset(0, 4), // Posisi bayangan judul
                   ),
                 ],
@@ -65,15 +74,60 @@ class Customcontainer {
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Modelcolor.textPrimary, // Warna teks judul
+                  color: Colors.white, // Warna teks judul
+                  shadows: [
+                    Shadow(
+                      blurRadius: 2,
+                      color: Colors.black38, // Efek bayangan teks
+                      offset: Offset(1, 1),
+                    ),
+                  ],
                 ),
               ),
             ),
             const SizedBox(height: 10), // Spasi antara judul dan konten
-            Expanded(child: child), // Konten yang bisa diisi dengan widget lain
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white
+                      .withOpacity(0.9), // Warna latar belakang konten
+                  borderRadius: BorderRadius.circular(10), // Sudut membulat
+                ),
+                child: child, // Konten yang bisa diisi dengan widget lain
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+// Fungsi untuk membuat container dengan efek glow menggunakan DeepPurple
+  static Widget widgetContainerWithGlow(BuildContext context,
+      {required Widget child, double? width, double? height}) {
+    return Container(
+      width: width ?? double.infinity, // Menyesuaikan lebar
+      height: height ?? double.infinity, // Menyesuaikan tinggi
+      decoration: BoxDecoration(
+        color: Colors.white
+            .withOpacity(0.3), // Set background color dengan opacity
+        borderRadius: BorderRadius.circular(15), // Rounded corners
+        border: Border.all(
+          color: Colors.deepPurple.shade600, // Gunakan DeepPurple untuk border
+          width: 3, // Lebar border
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 144, 93, 233)
+                .withOpacity(0.8), // Warna shadow DeepPurple
+            blurRadius: 25,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20), // Padding di dalam container
+      margin: const EdgeInsets.all(20), // Margin sekitar container
+      child: child, // Menyertakan widget anak
     );
   }
 }
