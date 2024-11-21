@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pemmob2/model/modelcolor.dart';
 
 class TambahBarangPage extends StatefulWidget {
@@ -10,7 +13,7 @@ class TambahBarangPage extends StatefulWidget {
 
 class _TambahBarangPageState extends State<TambahBarangPage> {
   final List<Map<String, TextEditingController>> grosirFields = [];
-
+  File? _selectedImage;
   @override
   void dispose() {
     for (var field in grosirFields) {
@@ -18,6 +21,17 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
       field['jumlah']?.dispose();
     }
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
   }
 
   @override
@@ -62,25 +76,42 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Header dengan ikon gambar
+                  // Header dengan gambar
                   Center(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor:
-                              Modelcolor.accentLight.withOpacity(0.8),
-                          child: IconButton(
-                            icon: const Icon(Icons.camera_alt, size: 30),
-                            onPressed: () {
-                              // Tambahkan logika upload gambar
-                            },
-                          ),
-                        ),
-                      ],
+                    child: GestureDetector(
+                      onTap:
+                          _pickImage, // Menggunakan CircleAvatar langsung untuk memilih gambar
+                      child: CircleAvatar(
+                        radius: 68,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage: _selectedImage != null
+                            ? FileImage(_selectedImage!) as ImageProvider
+                            : null,
+                        child: _selectedImage == null
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: 50,
+                                    color: Colors.grey[600],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    'Pilih Foto',
+                                    style: TextStyle(
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : null,
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 30),
 
                   _buildInputField(

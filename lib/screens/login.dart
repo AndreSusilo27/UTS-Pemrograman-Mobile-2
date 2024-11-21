@@ -175,6 +175,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  // Animasi Teks
                   AnimatedTextKit(
                     animatedTexts: [
                       TypewriterAnimatedText(
@@ -191,6 +192,8 @@ class _LoginPageState extends State<LoginPage> {
                     totalRepeatCount: 1,
                   ),
                   const SizedBox(height: 20),
+
+                  // Input Username
                   TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
@@ -203,6 +206,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
+
+                  // Input Password
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
@@ -216,12 +221,16 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
+
+                  // Pesan Error
                   if (_errorMessage != null)
                     Text(
                       _errorMessage!,
                       style: const TextStyle(color: Colors.red),
                     ),
                   const SizedBox(height: 10),
+
+                  // Tombol Login
                   _isLoading
                       ? const SpinKitCircle(
                           color: Colors.deepPurple,
@@ -245,6 +254,36 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
+
+                  // Divider
+                  const SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey.shade400,
+                          thickness: 1.0,
+                          endIndent: 10.0,
+                        ),
+                      ),
+                      Text(
+                        'atau',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey.shade400,
+                          thickness: 1.0,
+                          indent: 10.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Text Button Register
                   TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -261,19 +300,53 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
+
+                  // Divider
+                  const SizedBox(height: 10),
+                  Divider(
+                    color: Colors.grey.shade400,
+                    thickness: 1.0,
+                  ),
+
+                  // Tombol Home dengan Deep Purple Theme
+                  InkWell(
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const HomePage()),
                       );
                     },
-                    child: const Text(
-                      'Beranda',
-                      style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 16,
+                    borderRadius:
+                        BorderRadius.circular(15.0), // Efek rounded pada tombol
+                    child: Card(
+                      elevation: 6, // Efek bayangan
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      color: Colors.deepPurple.shade100, // Warna latar tombol
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 15),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.home,
+                              color: Colors.deepPurple.shade700,
+                              size: 28,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Home',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple.shade800,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

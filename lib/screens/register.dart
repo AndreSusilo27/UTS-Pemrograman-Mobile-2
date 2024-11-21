@@ -349,6 +349,34 @@ class RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                   ),
+                  // Divider
+                  const SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey.shade400,
+                          thickness: 1.0,
+                          endIndent: 10.0,
+                        ),
+                      ),
+                      Text(
+                        'atau',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey.shade400,
+                          thickness: 1.0,
+                          indent: 10.0,
+                        ),
+                      ),
+                    ],
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(

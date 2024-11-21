@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 
-/// Method untuk mendapatkan notifikasi hari ini
-List<Map<String, dynamic>> getTodaySchedules(
-    List<Map<String, dynamic>> schedules) {
-  final today = DateTime.now();
-  return schedules.where((schedule) {
-    final scheduleDate = DateTime.parse(schedule['date']);
-    return scheduleDate.year == today.year &&
-        scheduleDate.month == today.month &&
-        scheduleDate.day == today.day &&
-        !(schedule['completed'] ?? false); // Hanya jadwal yang belum selesai
-  }).toList();
+/// Method untuk mendapatkan notifikasi yang diurutkan berdasarkan tanggal
+List<Map<String, dynamic>> sortSchedules(List<Map<String, dynamic>> schedules) {
+  schedules.sort((a, b) {
+    final dateA = DateTime.parse(a['date']);
+    final dateB = DateTime.parse(b['date']);
+    return dateA.compareTo(dateB); // Urutkan dari yang terdekat ke terjauh
+  });
+  return schedules;
 }
 
-/// Widget untuk Icon Notifikasi dengan animasi, badge, dan kotak centang
+/// Widget untuk Icon Notifikasi dengan animasi, badge, dan pengelompokan warna
 Widget notificationsIcon({
   required BuildContext context,
   required List<Map<String, dynamic>> schedules,
   required Function(Map<String, dynamic>)
-      onComplete, // Callback ketika restock selesai
+      onComplete, // Callback ketika notifikasi selesai
+  required Function(Map<String, dynamic>) onDelete, // Callback untuk hapus
 }) {
-  final todaySchedules = getTodaySchedules(schedules);
+  final sortedSchedules = sortSchedules(schedules);
 
   // Fungsi untuk menampilkan dialog notifikasi
   void showNotificationsDialog() {
@@ -29,33 +27,82 @@ Widget notificationsIcon({
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
-            'Notifikasi Hari Ini',
+            'Notifikasi Jadwal',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9, // Lebih besar
-            height: MediaQuery.of(context).size.height * 0.6, // Lebih besar
-            child: todaySchedules.isEmpty
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: sortedSchedules.isEmpty
                 ? const Center(
-                    child: Text('Tidak ada jadwal restock hari ini.'),
+                    child: Text('Tidak ada notifikasi yang tersedia.'),
                   )
                 : ListView.builder(
-                    itemCount: todaySchedules.length,
+                    itemCount: sortedSchedules.length,
                     itemBuilder: (context, index) {
-                      final schedule = todaySchedules[index];
+                      final schedule = sortedSchedules[index];
+                      final scheduleDate = DateTime.parse(schedule['date']);
+                      final today = DateTime.now();
+
+                      // Warna background berdasarkan status
+                      Color backgroundColor;
+                      if (schedule['completed'] ?? false) {
+                        backgroundColor = Colors.grey.shade300; // Abu-abu
+                      } else if (scheduleDate.year == today.year &&
+                          scheduleDate.month == today.month &&
+                          scheduleDate.day == today.day) {
+                        backgroundColor = Colors.green.shade200; // Hijau
+                      } else {
+                        backgroundColor = Colors.yellow.shade200; // Kuning
+                      }
+
                       return Card(
-                        color: Colors.amber[50],
+                        color: backgroundColor,
                         margin: const EdgeInsets.symmetric(vertical: 5),
                         child: ListTile(
-                          title: Text('Barang: ${schedule['item']}'),
-                          subtitle: Text('Jumlah: ${schedule['quantity']}'),
-                          trailing: Checkbox(
-                            value: schedule['completed'] ?? false,
-                            onChanged: (value) {
-                              onComplete(schedule); // Menandai selesai
-                              Navigator.of(context).pop(); // Tutup dialog
-                              showNotificationsDialog(); // Refresh dialog
-                            },
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                schedule['title'] ?? 'No Title',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  decoration: (schedule['completed'] ?? false)
+                                      ? TextDecoration.lineThrough
+                                      : TextDecoration.none,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                  'Nama Barang: ${schedule['item'] ?? 'Unknown'}'),
+                            ],
+                          ),
+                          subtitle: Text(
+                              'Tanggal: ${schedule['date']?.split('T').first ?? 'Unknown'}\nJumlah: ${schedule['quantity'] ?? 'N/A'}'),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Checkbox(
+                                value: schedule['completed'] ?? false,
+                                onChanged: (value) {
+                                  onComplete(schedule); // Tandai selesai
+                                  Navigator.of(context).pop(); // Tutup dialog
+                                  showNotificationsDialog(); // Refresh dialog
+                                },
+                              ),
+                              if (schedule['completed'] ?? false)
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    onDelete(schedule); // Hapus notifikasi
+                                    Navigator.of(context).pop(); // Tutup dialog
+                                    showNotificationsDialog(); // Refresh dialog
+                                  },
+                                ),
+                            ],
                           ),
                         ),
                       );
@@ -73,29 +120,21 @@ Widget notificationsIcon({
     );
   }
 
+  // Ikon notifikasi dengan badge
   return GestureDetector(
     onTap: showNotificationsDialog,
     child: Stack(
       alignment: Alignment.topRight,
       children: [
-        TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 500),
-          tween: Tween<double>(
-              begin: 0.0, end: todaySchedules.isNotEmpty ? 2.0 : 0.0),
-          curve: Curves.easeInOut,
-          builder: (context, offset, child) {
-            return Transform.translate(
-              offset: Offset(offset as double, 0),
-              child: child,
-            );
-          },
-          child: Icon(
-            Icons.notifications,
-            size: 30,
-            color: Colors.amber.shade600,
-          ),
+        Icon(
+          Icons.notifications,
+          size: 30,
+          color: Colors.amber.shade600,
         ),
-        if (todaySchedules.isNotEmpty)
+        // Menghitung jumlah notifikasi hijau yang belum selesai (hari ini)
+        if (sortedSchedules.any((s) => !((s['completed'] ?? false) ||
+            (DateTime.parse(s['date']).day !=
+                DateTime.now().day)))) // Menampilkan hanya yang hijau
           Positioned(
             top: 0,
             right: 0,
@@ -110,7 +149,7 @@ Widget notificationsIcon({
                 minHeight: 17,
               ),
               child: Text(
-                '${todaySchedules.length}',
+                '${sortedSchedules.where((s) => !(s['completed'] ?? false) && DateTime.parse(s['date']).day == DateTime.now().day).length}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,

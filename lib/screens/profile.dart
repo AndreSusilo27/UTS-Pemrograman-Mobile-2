@@ -27,10 +27,10 @@ class _ProfilePageState extends State<ProfilePage> {
     final db = DatabaseHelper.instance;
     final result = await db.database.then((db) => db.rawQuery('''
       SELECT users.username, user_profiles.nama, user_profiles.email, 
-             user_profiles.alamat, user_profiles.notlp, user_profiles.foto
-      FROM users
-      INNER JOIN user_profiles ON users.id = user_profiles.iduser
-      WHERE users.id = ?
+             user_profiles.alamat, user_profiles.notlp, user_profiles.foto 
+      FROM users 
+      INNER JOIN user_profiles ON users.id = user_profiles.iduser 
+      WHERE users.id = ? 
     ''', [widget.userId]));
 
     if (result.isNotEmpty) {
@@ -81,57 +81,87 @@ class _ProfilePageState extends State<ProfilePage> {
               alignment: Alignment.center,
               children: [
                 Container(
-                  width: 130,
-                  height: 130,
+                  height: 340,
+                  width: 340,
+                  padding: const EdgeInsets.all(15.0),
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 15.0),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15),
+                    color:
+                        Colors.white.withOpacity(0.1), // Warna cerah transparan
+                    borderRadius:
+                        BorderRadius.circular(20), // Sudut tidak lancip
+                    border: Border.all(
+                      color:
+                          Colors.blueAccent.withOpacity(0.6), // Border menyala
+                      width: 2.5,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.blue.withOpacity(0.5),
-                        blurRadius: 12,
-                        spreadRadius: 5,
+                        color: Colors.blueAccent
+                            .withOpacity(0.4), // Shadow menyala lembut
+                        blurRadius: 15, // Radius blur shadow
+                        offset: const Offset(0, 5), // Posisi shadow
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Foto Profil
+                      Container(
+                        width: 230,
+                        height: 230,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.white
+                                .withOpacity(0.8), // Border putih untuk foto
+                            width: 2.0,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  Colors.white.withOpacity(0.4), // Shadow putih
+                              blurRadius: 8, // Blur shadow
+                              offset: const Offset(0, 4), // Posisi shadow
+                            ),
+                          ],
+                          image: DecorationImage(
+                            image: userData!['foto'] != null &&
+                                    userData!['foto'].isNotEmpty
+                                ? FileImage(File(userData!['foto']))
+                                : const AssetImage('assets/default_avatar.jpeg')
+                                    as ImageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Username dengan animasi
+                      AnimatedTextKit(
+                        animatedTexts: [
+                          TypewriterAnimatedText(
+                            '@${userData!['username']}',
+                            textStyle: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white, // Teks putih agar kontras
+                              letterSpacing: 1.2,
+                            ),
+                            speed: const Duration(
+                                milliseconds: 150), // Kecepatan animasi
+                          ),
+                        ],
+                        isRepeatingAnimation: false, // Tidak berulang
                       ),
                     ],
                   ),
                 ),
-                // Foto profil
-                Container(
-                  width: 180,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.white54, width: 3),
-                    image: DecorationImage(
-                      image: userData!['foto'] != null &&
-                              userData!['foto'].isNotEmpty
-                          ? FileImage(File(userData!['foto']))
-                          : const AssetImage('assets/default_avatar.jpeg')
-                              as ImageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
               ],
             ),
-            const SizedBox(height: 20),
-
-            // Username dengan efek animasi dan '@' di depan
-            AnimatedTextKit(
-              animatedTexts: [
-                TypewriterAnimatedText(
-                  '@${userData!['username']}',
-                  textStyle: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Modelcolor.textLight,
-                  ),
-                  speed: const Duration(milliseconds: 170), // Kecepatan animasi
-                ),
-              ],
-              isRepeatingAnimation: false, // Animasi tidak akan berulang
-            ),
-
             const SizedBox(height: 20),
 
             // Informasi profil dalam card

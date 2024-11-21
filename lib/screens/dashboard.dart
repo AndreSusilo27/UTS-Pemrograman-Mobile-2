@@ -6,7 +6,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:pemmob2/model/notifications_widget.dart';
 import 'package:pemmob2/screens/barangkeluar.dart';
 import 'package:pemmob2/screens/barangmasuk.dart';
-import 'package:pemmob2/screens/jadwalrestok.dart';
+import 'package:pemmob2/screens/penjadwalan.dart';
 import 'package:pemmob2/screens/laporan.dart';
 import 'package:pemmob2/screens/login.dart';
 import 'package:pemmob2/screens/profile.dart';
@@ -195,35 +195,66 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  // Contoh data jadwal
   List<Map<String, dynamic>> schedules = [
     {
+      'title': 'Restock Barang',
       'item': 'Keyboard Mechanical',
-      'quantity': '20 pcs',
       'date': DateTime.now().toIso8601String(),
-      'completed': false
+      'quantity': 10,
+      'completed': false,
     },
     {
-      'item': 'Keyboard Mechanical RGB',
-      'quantity': '15 pcs',
-      'date': DateTime.now().toIso8601String(),
-      'completed': false
-    },
-    {
+      'title': 'Restock Barang',
       'item': 'Mouse Wireless',
-      'quantity': '18 pcs',
+      'date': DateTime.now().add(const Duration(days: 1)).toIso8601String(),
+      'quantity': 5,
+      'completed': false,
+    },
+    {
+      'title': 'Pengiriman Barang',
+      'item': 'Mouse Logitech Wireless',
+      'date': DateTime.now().add(const Duration(days: 5)).toIso8601String(),
+      'quantity': 20,
+      'completed': false,
+    },
+    {
+      'title': 'Pengambilan Barang',
+      'item': 'Keyboard Mechanical Custume',
+      'date': DateTime.now().add(const Duration(days: 3)).toIso8601String(),
+      'quantity': 15,
+      'completed': false,
+    },
+    {
+      'title': 'Restock Barang',
+      'item': 'Laptop Acer Nitro 5',
       'date': DateTime.now().toIso8601String(),
-      'completed': false
+      'quantity': 10,
+      'completed': false,
+    },
+    {
+      'title': 'Restock Barang',
+      'item': 'Laptop Acer Special Edition',
+      'date':
+          DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+      'quantity': 50,
+      'completed': true,
     },
   ];
 
-  // Fungsi untuk menandai restock selesai
+  // Fungsi untuk menandai tugas selesai
   void completeSchedule(Map<String, dynamic> schedule) {
     setState(() {
       final index = schedules.indexOf(schedule);
       if (index != -1) {
         schedules[index]['completed'] = true;
       }
+    });
+  }
+
+  // Fungsi untuk menghapus notifikasi
+  void deleteSchedule(Map<String, dynamic> schedule) {
+    setState(() {
+      schedules.remove(schedule);
     });
   }
 
@@ -258,6 +289,7 @@ class _DashboardState extends State<Dashboard> {
             context: context,
             schedules: schedules,
             onComplete: completeSchedule,
+            onDelete: deleteSchedule,
           ),
           const SizedBox(width: 10),
           // Foto di pojok kanan AppBar
@@ -291,8 +323,21 @@ class _DashboardState extends State<Dashboard> {
                 padding: const EdgeInsets.all(15.0),
                 margin: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 12.0),
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.8),
+                    width: 2.0,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.4), // Shadow cerah
+                      blurRadius: 8, // Radius blur shadow
+                      spreadRadius: 2, // Sebarannya
+                      offset: const Offset(0, 4), // Posisi shadow
+                    ),
+                  ],
+                  image: const DecorationImage(
                     image: AssetImage('assets/avatar.jpg'),
                     fit: BoxFit.cover,
                   ),
@@ -928,7 +973,7 @@ Widget barChart(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Jumlah Penjualan per Produk',
+            'Jumlah Penjualan per Ketegori',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
@@ -1045,7 +1090,7 @@ Widget barChart(BuildContext context) {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Jumlah penjualan produk dalam kategori elektronik mencakup berbagai produk seperti Laptop, Smartphone, Televisi, dan lainnya.',
+            'Jumlah penjualan produk dalam mencakup berbagai kategori seperti Laptop, Mouse, Keyboard, dan Kabel USB.',
             style: TextStyle(fontSize: 12, color: Colors.black45),
           ),
         ],

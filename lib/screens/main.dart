@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
+                  backgroundColor: Colors.amber.shade700,
                   minimumSize: const Size(200, 60),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
